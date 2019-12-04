@@ -1,0 +1,141 @@
+* {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+
+body {
+}
+
+.header {
+	background: #86d6b2;
+    text-align: center;
+    padding: 40px;
+    color: #FFFFFF;
+}
+
+.button {
+	display: block;
+	width: 150px;
+    border: 1px solid #fff;
+    text-decoration: none;
+    color: #fff;
+    margin: 15px auto;
+    padding: 12px;
+    transition: all .4s;
+}
+
+.button:hover {
+	background: rgba(255,255,255,.3);
+    border-color: rgba(255,255,255,.3);
+}
+
+.event {
+	width: 90%;
+	border-radius: 5px;
+	margin: 20px auto;
+	display: flex;
+	flex-direction: row;
+	box-shadow: 2px 2px 10px #CCCCCC;
+}
+
+.event .rows {
+	width: 74%;
+	margin-top: 10px;
+}
+
+.event .row {
+	display: flex;
+	flex-direction: column;
+	color: #424242;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+.event .row .time {
+	margin-bottom: 4px;
+    font-size: 4vw;
+    display: flex
+}
+
+.event .row .place {
+	font-size: 4vw;
+	display: flex;
+	align-items: center;
+	margin-bottom: 4px;
+}
+
+.event .row .place img { 
+	width: 20px; 
+}
+
+.event .row .place a {
+	color: #424242;
+    text-decoration: none;
+}
+
+.event .row .place a:hover {
+	color: #424242;
+    text-decoration: underline;
+}
+
+.event .day .time img { 
+	width: 10px; 
+}
+
+.event .day {
+	width: 20%;
+	color: #424243;
+	font-weight: 900;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+	border-radius: 0 5px 5px 0;
+}
+
+.event .day .number { 
+	font-size: 25pt; 
+}
+
+.event img {
+	margin-right: 8px;
+}
+
+.event .time img {
+	width: 18px;
+	margin-right: 10px;
+	vertical-align: bottom;
+}
+
+.event .label {
+    font-size: 11px;
+    width: 51px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 8px;
+}
+
+.event .cond,
+.event .aux {
+	font-size: 14px;
+	margin-bottom: 6px;
+}
+
+.event .row {
+	background: #d2fbe7;
+	border-radius: 5px;
+}
+
+@media screen and (min-width:750px) {
+	.event { 
+		width: 60%; 
+	}
+	.event .row .place,
+	.event .row .time { 
+		font-size: 14pt; 
+	}
+}

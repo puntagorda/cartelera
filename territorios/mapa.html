@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<title>Parque Rivera: Territorios: Frecuencia</title>
+		<link href="styles.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDeLzgtsrTNxNrXFe7H-RxBwg8CY30X4Lk&language=es&region=uy"/>
+		<script type="text/javascript" src="kmz/ZipFile.complete.js"></script>
+		<script type="text/javascript" src="kmz/geoxml3.js"></script>
+		<script type="text/javascript" src="ProjectedOverlay.js"></script>
+		<script type="text/javascript" src="maplabel-compiled.js"></script>
+		<script type="text/javascript" src="territory.js"></script>
+	</head>
+	<body>
+		<div id="map-canvas"></div>
+		
+		<div class="map-control">
+			<div id="map-type-combo" class="custom-control combo-chooser">
+				<span class="combo-value">Grupos</span>
+				<img src="https://maps.gstatic.com/mapfiles/arrow-down.png" draggable="false">
+			</div>
+			<div class="combo-options"></div>
+		</div>
+		
+		<div class="map-control">
+			<!--<div id="show-extras-btn" class="custom-control selected">Detalles</div>-->
+			<div id="show-legend-btn" class="custom-control">Leyenda</div>
+		</div>
+		
+		<div id="show-location" class="widget-my-location"> 
+			<button id="show-location-btn" class="widget-my-location-button">
+				<div class="widget-my-location-button-icon-common widget-my-location-cookieless widget-my-location-button-blue"></div>
+			</button>
+		</div>
+		
+		<div id="legend-box">
+			<div id="original-legend" class="legend-type">
+				<div class="legend-row">
+					<div id="group1" class="legend-item"></div>
+					<div class="legend-title">Grupo 1</div>
+				</div>
+				<div class="legend-row">
+					<div id="group2" class="legend-item"></div>
+					<div class="legend-title">Grupo 2</div>
+				</div>
+				<div class="legend-row">
+					<div id="group3" class="legend-item"></div>
+					<div class="legend-title">Grupo 3</div>
+				</div>
+				<div class="legend-row">
+					<div id="group4A" class="legend-item"></div>
+					<div class="legend-title">Grupo 4A</div>
+				</div>
+				<div class="legend-row">
+					<div id="group4B" class="legend-item"></div>
+					<div class="legend-title">Grupo 4B</div>
+				</div>
+				<div class="legend-row">
+					<div id="group5" class="legend-item"></div>
+					<div class="legend-title">Grupo 5</div>
+				</div>
+				<div class="legend-row">
+					<div id="group6" class="legend-item"></div>
+					<div class="legend-title">Grupo 6</div>
+				</div>
+				<div class="legend-row">
+					<div id="group7" class="legend-item"></div>
+					<div class="legend-title">Grupo 7</div>
+				</div>
+				<div class="legend-row">
+					<div id="group8" class="legend-item"></div>
+					<div class="legend-title">Grupo 8</div>
+				</div>
+				<div class="legend-row">
+					<div id="group9" class="legend-item"></div>
+					<div class="legend-title">Grupo 9</div>
+				</div>
+			</div>
+			<div id="campaign-legend" class="legend-type">
+				<div class="legend-row">
+					<div id="done" class="legend-item"></div>
+					<div class="legend-title">Cubierto</div>
+				</div>
+				<div class="legend-row">
+					<div id="partial" class="legend-item"></div>
+					<div class="legend-title">Parcial</div>
+				</div>
+				<div class="legend-row">
+					<div id="toDo" class="legend-item"></div>
+					<div class="legend-title">Sin hacer</div>
+				</div>
+				<div class="legend-row">
+					<div id="noAccess" class="legend-item"></div>
+					<div class="legend-title">Acceso restringido</div>
+				</div>
+			</div>
+			<div id="heat-map-legend" class="legend-type">
+				<div class="legend-row">
+					<div id="incomplete" class="legend-item"></div>
+					<div class="legend-title">Empezado</div>
+				</div>
+				<div class="legend-row">
+					<div id="no-data" class="legend-item"></div>
+					<div class="legend-title">Sin hacer</div>
+				</div>
+				<div class="legend-row">
+					<div id="recent" class="legend-item"></div>
+					<div class="legend-title">Hecho anteriormente</div>
+					<div class="legend-title">Hecho recientemente</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

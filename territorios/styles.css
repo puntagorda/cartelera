@@ -1,0 +1,227 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+#map-canvas {
+	height: 100%;
+	width: 100%;
+}
+h3 {
+	margin-bottom: 0px;
+}
+.map-control {
+	margin: 10px 10px 10px 0px;
+}
+.custom-control {
+	border-radius: 2px;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+	font-weight: 500;
+	text-align: center;
+	color: rgb(0, 0, 0);
+	font-family: Roboto, Arial, sans-serif;
+	cursor: pointer;
+	user-select: none;
+	font-size: 11px;
+	padding: 8px;
+	overflow: hidden;
+	background-color: rgb(255, 255, 255);
+}
+.custom-control:hover, .combo-item:hover {
+	background-color: rgb(235, 235, 235);
+}
+.custom-control.selected {
+	background-color: rgb(205, 205, 205);
+}
+.custom-control.combo-chooser {
+	width: 80px;
+	text-align: left;
+}
+.combo-chooser img {
+	user-select: none;
+	border: 0px;
+	padding: 0px;
+	margin: -2px 0px 0px;
+	position: absolute;
+	right: 6px;
+	top: 15px;
+	width: 7px;
+	height: 4px;
+}
+.combo-options {
+	background-color: white;
+	padding: 2px;
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+	position: absolute;
+	top: 100%;
+	left: 0px;
+	right: 0px;
+	text-align: left;
+	display: none;
+	z-index: -1;
+}
+.combo-item {
+	color: rgb(86, 86, 86);
+	font-family: Roboto, Arial, sans-serif;
+	user-select: none;
+	font-size: 11px;
+	background-color: rgb(255, 255, 255);
+	padding: 6px;
+	cursor: pointer;
+}
+.combo-item.selected {
+	font-weight: 500;
+}
+#show-extras-btn,
+#show-legend-btn {
+	left: 200px;
+	float: left;
+    margin-right: 10px;
+}
+.widget-my-location {
+    width: 29px;
+    height: 29px;
+	margin: 0px 10px;
+}
+.widget-my-location button {
+	margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font: inherit;
+    vertical-align: baseline;
+    list-style: none;
+}
+.widget-my-location-button .widget-my-location-cookieless {
+    background-size: 180px 18px;
+}
+.widget-my-location-button .widget-my-location-button-blue {
+    background-position: -144px 0;
+}
+.widget-my-location-button .widget-my-location-button-blue:hover {
+    background-position: -162px 0;
+}
+.widget-my-location-button .widget-my-location-cookieless {
+    background-image: url(https://maps.gstatic.com/tactile/mylocation/mylocation-sprite-cookieless-v2-2x.png);
+}
+.widget-my-location-button {
+    background-color: rgba(255,255,255,1);
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    display: block;
+    width: 29px;
+    height: 29px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 0.16s ease-out;
+}
+.widget-my-location-button-icon-common {
+    display: block;
+    height: 18px;
+    left: 6px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 6px;
+    width: 18px;
+}
+#legend-box {
+	display: none;
+	margin: 0px 10px;
+	padding: 8px;
+	background: rgba(255, 255, 255, 0.7);
+	border-radius: 2px;
+	-webkit-background-clip: padding-box;
+}
+.legend-row {
+	overflow: hidden;
+	cursor: pointer;
+	user-select: none;
+}
+#original-legend .legend-row {
+	width: 80px;
+}
+#campaign-legend .legend-row {
+	width: 120px;
+}
+#heat-map-legend .legend-row {
+	width: 130px;
+}
+.legend-item {
+	float: left;
+	width: 16px;
+	height: 16px;
+	margin: 2px 5px 0px 0px;
+	border: 2px #FFF solid;
+}
+.legend-title {
+	padding-top: 6px;
+	font-family: Roboto, Arial, sans-serif;
+	font-size: 8pt;
+}
+#group1 {
+	background: #c2185b;
+}
+#group2 {
+	background: #f9a825;
+}
+#group3 {
+	background: #1a237e;
+}
+#group4A {
+	background: #7cb342;
+}
+#group4B {
+	background: #0288d1;
+}
+#group5 {
+	background: #9c27b0;
+}
+#group6 {
+	background: #e65100;
+}
+#group7 {
+	background: #006064;
+}
+#group8 {
+	background: #a52714;
+}
+#group9 {
+	background: #ffea00;
+}
+#done {
+	background: rgb(0, 255, 153);
+}
+#partial {
+	background: rgb(255, 255, 0);
+}
+#toDo {
+	background: rgb(255, 255, 255);
+}
+#noAccess {
+	background: #a9a7a2;
+}
+#incomplete {
+	background: rgb(100, 0, 150);
+}
+#no-data {
+	background: rgb(255, 40, 0);
+}
+#recent {
+	height: 40px;
+	/* Old browsers */
+	background: rgb(255,120,0);
+	/* FF3.6-15 */
+	background: -moz-linear-gradient(top,  rgb(255,120,0) 0%, rgb(255,255,0) 100%); 
+	/* Chrome10-25,Safari5.1-6 */
+	background: -webkit-linear-gradient(top,  rgb(255,120,0) 0%,rgb(255,255,0) 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	background: linear-gradient(to bottom,  rgb(255,120,0) 0%,rgb(255,255,0) 100%); 
+	/* IE6-9 */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff7800', endColorstr='#ffff00',GradientType=0 );
+}
+

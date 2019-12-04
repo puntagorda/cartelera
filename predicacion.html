@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="esp">
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Congregación Punta Gorda: Predicación</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="predicacion.css">
+</head>
+<style>
+    
+</style>
+
+<body onload="groups()">
+    <div class="header">
+        <h2>Grupos de predicación</h2>
+        <a class="button" 
+        	href="https://docs.google.com/spreadsheets/d/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/export?exportFormat=pdf&format=pdf&portrait=true&gid=788148842&single=true"
+        	target="_blank" 
+        	download>
+    	    Descargar PDF
+        </a>
+	</div>
+    <div id="table" class="table">
+    	<div class="event" style="display: none;">
+    		<div class="day">
+    			<div class="number"><span class="value">1</span></div>
+    			<div class="date"><span class="value">DOM</span></div>
+    		</div>
+    		<div class="rows">
+				<div class="row">
+					<div class="time"><img src="images/service/noun_time_2664301.svg"><span class="value">10:00</span></div>
+					<div class="place"><img src="images/service/noun_place_2478983.svg"><span class="value">Familia Costa</span></div>
+					<div class="cond"><span class="label">Conductor </span><span class="value">Jony Costa</span></div>
+					<div class="aux"><span class="label">Auxiliar </span><span class="value">Diego Grillo</span></div>
+					<div class="notes"><span class="label">Notas </span><span class="value">...</span></div>
+				</div>
+    		</div>
+    	</div>
+    </div>
+    <script>
+    
+    	function fill(item, selector, content, link) {
+    		var field = item.find(selector);
+    		if (link !== undefined && link != null) {
+    			field.find(".value").text("").append($("<a>").attr("href", link).text(content));
+    		} else {
+    			field.find(".value").text(content);
+    		}
+    		if (content.length == 0) {
+    			field.hide();
+    		}
+    	}
+    	
+    	function findPlace(data, place) {
+    		for (var i in data.feed.entry) {
+    			if (data.feed.entry[i].gsx$lugar.$t == place) {
+    				return data.feed.entry[i].gsx$url.$t;
+    			}
+    		}
+    		return null;
+    	}
+    
+        function groups() {
+        	var groups = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/3/public/values?alt=json';
+        	var places = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/8/public/values?alt=json';
+        
+            var groupsRequest = new XMLHttpRequest();
+            groupsRequest.open('GET', groups);
+            groupsRequest.onload = function() {
+
+				var placesRequest = new XMLHttpRequest();
+				placesRequest.open('GET', places);
+				placesRequest.onload = function() {
+
+					var groupsData = JSON.parse(groupsRequest.responseText);
+					var placesData = JSON.parse(placesRequest.responseText);
+					var formattedgroupsData = {};
+					var template = $(".event");
+
+					for (var i = 0; i < groupsData.feed.entry.length; i++) {
+						var entry = groupsData.feed.entry[i];
+						var day = entry.gsx$día.$t;
+						var hour = entry.gsx$hora.$t;
+						var conductor = entry.gsx$conductor.$t;
+						var auxiliar = entry.gsx$auxiliar.$t;
+						var place = entry.gsx$lugar.$t;
+						var notes = entry.gsx$notas.$t;
+						if (formattedgroupsData[day] === undefined) {
+							formattedgroupsData[day] = [];
+						}
+						formattedgroupsData[day].push({
+							"hour": entry.gsx$hora.$t,
+							"conductor": entry.gsx$conductor.$t,
+							"auxiliar": entry.gsx$auxiliar.$t,
+							"place": entry.gsx$lugar.$t,
+							"notes": entry.gsx$notas.$t
+						});
+					
+					}
+					for (var day in formattedgroupsData) {
+						var item = template.clone();
+						fill(item, ".number", day.split(" ")[1]);
+						fill(item, ".date", day.split(" ")[0]);
+						var times = formattedgroupsData[day];
+						var templateRow = item.find(".row").clone();
+						item.find(".row").remove();
+						for (var i in times) {
+							var row = templateRow.clone();
+							fill(row, ".time", times[i].hour);
+							fill(row, ".place", times[i].place, findPlace(placesData, times[i].place));
+							fill(row, ".cond", times[i].conductor);
+							fill(row, ".aux", times[i].auxiliar);
+							fill(row, ".notes", times[i].notes);
+							item.find(".rows").append(row);
+						}
+						item.show();
+						$("#table").append(item);
+					}
+                }
+            	placesRequest.send();
+                
+            }
+            groupsRequest.send();
+        }
+    </script>
+</body>
+
+</html>

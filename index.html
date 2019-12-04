@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Congregación Punta Gorda</title>
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <style>
+        body {
+            font-family: 'Montserrat', Helvetica;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .contenido {
+            width: 97%;
+            margin: auto;
+        }
+        
+        li {
+            margin: auto;
+            list-style: none;
+            position: relative;
+        }
+        
+        ul.card {
+            padding: 0px;
+            width: auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        li.cont {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+        
+        li a {
+            height: auto;
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            margin: 10px 0;
+            padding: 20px;
+            color: #FF5500;
+            background: #F4F4F4;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .card li {
+            height: auto;
+            position: relative;
+        }
+        
+        .card li:before,
+        .card li:after {
+            z-index: -1;
+            position: absolute;
+            content: "";
+            bottom: 20px;
+            left: 4px;
+            width: 100%;
+            height: 20px;
+            top: 59%;
+            max-width: 250px;
+            background: #777;
+            box-shadow: 0 15px 10px #777;
+            transform: rotate(-7deg);
+        }
+        
+        .card li:after {
+            right: 4px;
+            left: auto;
+            transform: rotate(7deg);
+        }
+        
+        .card li img {
+            width: 50px;
+            height: 50px;
+            float: left;
+            margin-top: 5px;
+            margin-right: 10px;
+        }
+        
+        .card li span {
+            float: left;
+            position: relative;
+            top: 30%;
+        }
+        
+        @media screen and (max-width: 800px) {
+            li a {
+                width: 330px;
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+            .card li:before,
+            .card li:after {
+                top: 52%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenido">
+        <div>
+            <h1>Congregación Punta Gorda</h1></div>
+        <ul>
+            <li class="cont">
+                <h2>Predicación</h2>
+                <ul class="card">
+                    <li>
+                        <a target="_blank" href="predicacion.html">
+                            <img src="images/noun_schedule_1776600.svg" />
+                            <span>Grupos de predicación</span>
+                        </a>
+                    </li>
+                    <!--
+                    <li>
+                        <a target="_blank" href="territorios/territorios.html">
+                            <img src="images/noun_map_1855005.svg" />
+                            <span>Territorios para la semana</span>
+                        </a>
+                    </li>
+                    -->
+                    <li>
+                        <a target="_blank" href="territorios/mapa.html">
+                            <img src="images/noun_map_10799.svg" />
+                            <span>Mapa de territorios</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="cont">
+                <h2>Reuniones</h2>
+                <ul class="card">
+                    <!--
+                    <li>
+                        <a target="_blank" href="vida-y-ministerio.html">
+                            <img src="images/noun_teach_1614348.svg" />
+                            <span>Reunión Vida y Ministerio</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="reunion-publica.html">
+                            <img src="images/noun_conference_704693.svg" />
+                            <span>Reunión Pública</span>
+                        </a>
+                    </li>
+                    -->
+                    <li>
+                        <a target="_blank" href="limpieza.html">
+                            <img src="images/noun_clean_1683608.svg" />
+                            <span>Programa de Limpieza</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!--
+            <li class="cont">
+                <h2>Congregación</h2>
+                <ul class="card">
+                    <li>
+                        <a target="_blank" href="publicadores.html">
+                            <img src="images/noun_people_199910.svg" />
+                            <span>Grupos de publicadores</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="responsabilidades.html">
+                            <img src="images/noun_organization_421912.svg" />
+                            <span>Responsabilidades</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            -->
+        </ul>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Lugares</name>
+    <Style id="icon-1603-A52714-labelson">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-1.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    <Style id="icon-1899-A52714-labelson">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-2.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+    </Style>
+    <Placemark>
+      <name>Familia De Los Santos</name>
+      <description><![CDATA[Hogar: true<br>Dirección: Calle 5 y calle 3, Zona 3, Tira 35, Apto 5597, Av. Bolivia 255]]></description>
+      <styleUrl>#icon-1603-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value>1</value>
+        </Data>
+        <Data name="Dirección">
+          <value>Calle 5 y calle 3, Zona 3, Tira 35, Apto 5597, Av. Bolivia 255</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0938445,-34.8750205,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Familia Núñez</name>
+      <description><![CDATA[Hogar: true<br>Dirección: Av. Bolivia 2551, Block Q, Apto. 112]]></description>
+      <styleUrl>#icon-1603-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value>1</value>
+        </Data>
+        <Data name="Dirección">
+          <value>Av. Bolivia 2551, Block Q, Apto. 112</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0948557,-34.8765322,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Gladys Rodríguez</name>
+      <description><![CDATA[Hogar: true<br>Dirección: Padua 5881]]></description>
+      <styleUrl>#icon-1603-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value>1</value>
+        </Data>
+        <Data name="Dirección">
+          <value>Padua 5881</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0826355,-34.8766126,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Familia Vázquez</name>
+      <description><![CDATA[Hogar: true<br>Dirección: Uspallata 1477]]></description>
+      <styleUrl>#icon-1603-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value>1</value>
+        </Data>
+        <Data name="Dirección">
+          <value>Uspallata 1477</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.074505,-34.8926901,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Salón del Reino</name>
+      <description><![CDATA[Hogar: true<br>Dirección: Av. Dr. Juan B. Alberdi 6076]]></description>
+      <styleUrl>#icon-1603-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value>1</value>
+        </Data>
+        <Data name="Dirección">
+          <value>Av. Dr. Juan B. Alberdi 6076</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0775416,-34.8841518,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Av. Italia y Z. Felde</name>
+      <description><![CDATA[Hogar: <br>Dirección: ]]></description>
+      <styleUrl>#icon-1899-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value/>
+        </Data>
+        <Data name="Dirección">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0957735,-34.8852161,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Dr. A. Gallinal y Orinoco</name>
+      <description><![CDATA[Hogar: <br>Dirección: ]]></description>
+      <styleUrl>#icon-1899-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value/>
+        </Data>
+        <Data name="Dirección">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0919439,-34.8945578,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
