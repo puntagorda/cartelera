@@ -26,7 +26,8 @@ mapTypes[MAP_TYPE.FOCUSED] = {
 	name: "Asignado",
 	legendId: "#original-legend",
 	colorProcessor: function(territory, options) {
-		if (options.params.territorio !== undefined && territory.name == options.params.territorio) {
+		if (options.params.territorio !== undefined && 
+			territory.name == options.params.territorio) {
 			return territory.colors[1];
 		}
 		return rgb(255, 255, 255);
@@ -232,7 +233,7 @@ function addTerritoryInfoWindow(infoWindow, placemark, territories, map) {
 	var title = "Territorio " + placemark.name;
 	var description = "";
 	description = addContent(description, "Fecha", territory.dateStr);
-	description = addContent(description, "Completado", territory.isComplete ? "Sí" : "No");
+	// description = addContent(description, "Completado", territory.isComplete ? "Sí" : "No");
 	description = addContent(description, "Manzanas", territory.blocks);
 	description = addContent(description, "Notas", territory.notes);
 	addInfoWindow(map, placemark.polygon, infoWindow, placemark.polygon.bounds.getCenter(), title, description);
@@ -265,10 +266,19 @@ function processPolygon(index, placemark, map, infoWindow, options, mapType) {
 	}
 }
 
+function findTerritory(geoXmlDoc, territory) {
+  for (var i = 0, len = geoXmlDoc.placemarks.length; i < len; i++) {
+  		if (geoXmlDoc.placemarks[i].name == territory) {
+	      return geoXmlDoc.placemarks[i];
+    	}
+    }
+    return null;
+}
+
 function focusTerritory(geoXmlDoc, map, options) {
 	var territory = options.params.territorio;
 	if (territory !== undefined) {
-		var placemark = geoXmlDoc.placemarks[territory - 1];
+		var placemark = findTerritory(geoXmlDoc, territory);
 		var bounds = new google.maps.LatLngBounds();
 		var coordinates = placemark.Polygon[0].outerBoundaryIs[0].coordinates;
 		$.each(coordinates, function(index, coordinate) {

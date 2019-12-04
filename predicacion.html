@@ -30,11 +30,32 @@
     		</div>
     		<div class="rows">
 				<div class="row">
-					<div class="time"><img src="images/service/noun_time_2664301.svg"><span class="value">10:00</span></div>
-					<div class="place"><img src="images/service/noun_place_2478983.svg"><span class="value">Familia Costa</span></div>
-					<div class="cond"><span class="label">Conductor </span><span class="value">Jony Costa</span></div>
-					<div class="aux"><span class="label">Auxiliar </span><span class="value">Diego Grillo</span></div>
-					<div class="notes"><span class="label">Notas </span><span class="value">...</span></div>
+					<div class="time">
+						<img src="images/service/noun_time_2664301.svg">
+						<span class="value">10:00</span>
+					</div>
+					<div class="place">
+						<img src="images/service/noun_place_2478983.svg">
+						<span class="value">Familia Costa</span>
+					</div>
+					<div class="cond">
+						<span class="label">Conductor </span>
+						<span class="value">Jony Costa</span>
+					</div>
+					<div class="aux">
+						<span class="label">Auxiliar </span>
+						<span class="value">Diego Grillo</span>
+					</div>
+					<div class="notes">
+						<span class="label">Notas </span>
+						<span class="value">...</span>
+					</div>
+					<div class="territories">
+						<span class="label">Territorios </span>
+						<span class="value">
+							<a href="">33</a>
+						</span>
+					</div>
 				</div>
     		</div>
     	</div>
@@ -53,6 +74,21 @@
     		}
     	}
     	
+    	function fillTerritories(item, selector, territories) {
+    		var field = item.find(selector);
+    		if (territories.length > 0) {
+    			var element = field.find(".value").text("");
+    			$.each(territories, function(key, value) {
+    				$("<a>")
+    					.attr("href", "territorios/mapa.html?territorio=" + value)
+    					.text(value)
+    					.appendTo(element);
+    			});
+    		} else {
+    			field.hide();
+    		}
+    	}
+    	
     	function findPlace(data, place) {
     		for (var i in data.feed.entry) {
     			if (data.feed.entry[i].gsx$lugar.$t == place) {
@@ -61,10 +97,73 @@
     		}
     		return null;
     	}
+    	
+    	function findTerritory(data, day, hour, place) {
+    		var territories = [];
+    		for (var i in data.feed.entry) {
+    			if (data.feed.entry[i].gsx$fecha.$t == day && 
+    				data.feed.entry[i].gsx$hora.$t == hour &&
+    				data.feed.entry[i].gsx$lugar.$t == place) {
+    				territories.push(data.feed.entry[i].gsx$asignado.$t);
+    			}
+    		}
+    		return territories;
+    	}
+    	
+    	function processData(groupsRequest, placesRequest, assignmentsRequest) {
+    		var groupsData = JSON.parse(groupsRequest.responseText);
+			var placesData = JSON.parse(placesRequest.responseText);
+			var assignmentsData = JSON.parse(assignmentsRequest.responseText);
+			var formattedgroupsData = {};
+			var template = $(".event");
+
+			for (var i = 0; i < groupsData.feed.entry.length; i++) {
+				var entry = groupsData.feed.entry[i];
+				var day = entry.gsx$día.$t;
+				var hour = entry.gsx$hora.$t;
+				var conductor = entry.gsx$conductor.$t;
+				var auxiliar = entry.gsx$auxiliar.$t;
+				var place = entry.gsx$lugar.$t;
+				var notes = entry.gsx$notas.$t;
+				if (formattedgroupsData[day] === undefined) {
+					formattedgroupsData[day] = [];
+				}
+				formattedgroupsData[day].push({
+					"hour": entry.gsx$hora.$t,
+					"conductor": entry.gsx$conductor.$t,
+					"auxiliar": entry.gsx$auxiliar.$t,
+					"place": entry.gsx$lugar.$t,
+					"notes": entry.gsx$notas.$t,
+					"territories": findTerritory(assignmentsData, day, hour, entry.gsx$lugar.$t)
+				});
+		
+			}
+			for (var day in formattedgroupsData) {
+				var item = template.clone();
+				fill(item, ".number", day.split(" ")[1]);
+				fill(item, ".date", day.split(" ")[0]);
+				var times = formattedgroupsData[day];
+				var templateRow = item.find(".row").clone();
+				item.find(".row").remove();
+				for (var i in times) {
+					var row = templateRow.clone();
+					fill(row, ".time", times[i].hour);
+					fill(row, ".place", times[i].place, findPlace(placesData, times[i].place));
+					fill(row, ".cond", times[i].conductor);
+					fill(row, ".aux", times[i].auxiliar);
+					fill(row, ".notes", times[i].notes);
+					fillTerritories(row, ".territories", times[i].territories);
+					item.find(".rows").append(row);
+				}
+				item.show();
+				$("#table").append(item);
+			}
+    	}
     
         function groups() {
         	var groups = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/3/public/values?alt=json';
-        	var places = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/8/public/values?alt=json';
+        	var places = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/11/public/values?alt=json';
+        	var assignments = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/8/public/values?alt=json';
         
             var groupsRequest = new XMLHttpRequest();
             groupsRequest.open('GET', groups);
@@ -74,50 +173,14 @@
 				placesRequest.open('GET', places);
 				placesRequest.onload = function() {
 
-					var groupsData = JSON.parse(groupsRequest.responseText);
-					var placesData = JSON.parse(placesRequest.responseText);
-					var formattedgroupsData = {};
-					var template = $(".event");
-
-					for (var i = 0; i < groupsData.feed.entry.length; i++) {
-						var entry = groupsData.feed.entry[i];
-						var day = entry.gsx$día.$t;
-						var hour = entry.gsx$hora.$t;
-						var conductor = entry.gsx$conductor.$t;
-						var auxiliar = entry.gsx$auxiliar.$t;
-						var place = entry.gsx$lugar.$t;
-						var notes = entry.gsx$notas.$t;
-						if (formattedgroupsData[day] === undefined) {
-							formattedgroupsData[day] = [];
-						}
-						formattedgroupsData[day].push({
-							"hour": entry.gsx$hora.$t,
-							"conductor": entry.gsx$conductor.$t,
-							"auxiliar": entry.gsx$auxiliar.$t,
-							"place": entry.gsx$lugar.$t,
-							"notes": entry.gsx$notas.$t
-						});
-					
+					var assignmentsRequest = new XMLHttpRequest();
+					assignmentsRequest.open('GET', assignments);
+					assignmentsRequest.onload = function() {
+				
+						processData(groupsRequest, placesRequest, assignmentsRequest);
+						
 					}
-					for (var day in formattedgroupsData) {
-						var item = template.clone();
-						fill(item, ".number", day.split(" ")[1]);
-						fill(item, ".date", day.split(" ")[0]);
-						var times = formattedgroupsData[day];
-						var templateRow = item.find(".row").clone();
-						item.find(".row").remove();
-						for (var i in times) {
-							var row = templateRow.clone();
-							fill(row, ".time", times[i].hour);
-							fill(row, ".place", times[i].place, findPlace(placesData, times[i].place));
-							fill(row, ".cond", times[i].conductor);
-							fill(row, ".aux", times[i].auxiliar);
-							fill(row, ".notes", times[i].notes);
-							item.find(".rows").append(row);
-						}
-						item.show();
-						$("#table").append(item);
-					}
+					assignmentsRequest.send();
                 }
             	placesRequest.send();
                 
