@@ -145,5 +145,77 @@
         </coordinates>
       </Point>
     </Placemark>
+    <Placemark>
+      <name>Familia Antón</name>
+      <description><![CDATA[Hogar: true<br>Dirección: Vicente Martínez Cuitiño 5352 bis]]></description>
+      <styleUrl>#icon-1603-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value>1</value>
+        </Data>
+        <Data name="Dirección">
+          <value>Vicente Martínez Cuitiño 5352 bis</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0990192,-34.8688003,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Av. Italia y Av. Bolivia</name>
+      <description><![CDATA[Hogar: <br>Dirección: ]]></description>
+      <styleUrl>#icon-1899-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value/>
+        </Data>
+        <Data name="Dirección">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0836782,-34.8825232,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Av. Rivera y Grito de Gloria</name>
+      <description><![CDATA[Hogar: <br>Dirección: ]]></description>
+      <styleUrl>#icon-1899-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value/>
+        </Data>
+        <Data name="Dirección">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0870295,-34.8906456,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Coimbra y Av. Gral. Paz</name>
+      <description><![CDATA[Hogar: <br>Dirección: ]]></description>
+      <styleUrl>#icon-1899-A52714-labelson</styleUrl>
+      <ExtendedData>
+        <Data name="Hogar">
+          <value/>
+        </Data>
+        <Data name="Dirección">
+          <value/>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          -56.0805842,-34.8959816,0
+        </coordinates>
+      </Point>
+    </Placemark>
   </Document>
 </kml>
