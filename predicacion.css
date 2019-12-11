@@ -56,7 +56,7 @@ body {
 .event .row .time {
 	margin-bottom: 4px;
     font-size: 4vw;
-    display: flex
+    display: flex;
 }
 
 .event .row .place {
@@ -130,11 +130,12 @@ body {
 	border-radius: 5px;
 }
 
-.event .territories .label {
+.event .assignments .label,
+.event .do-not-call .label {
 	vertical-align: top;
 }
 
-.event .territories a {
+.event .assignments a {
 	display: inline-block;
     width: 18px;
     border: 1px solid #424242;
@@ -144,10 +145,31 @@ body {
     margin-right: 10px;
     padding: 12px;
     transition: all .4s;
+    position: relative;
+    overflow: hidden;
 }
 
-.event .territories a:hover {
+.event .assignments a:hover {
 	background: rgba(255,255,255,.3);
+}
+
+.event .do-not-call .value {
+	display: inline-block;
+    font-size: 14px;
+}
+
+.event .do-not-call ul {
+	margin-left: 13px;
+}
+
+.arrow-right {
+  background-color: #444;
+  height: 20px;
+  right: -12px;
+  position: absolute;
+  top: -12px;
+  width: 20px;
+  -webkit-transform: rotate(-45deg);
 }
 
 @media screen and (min-width:750px) {

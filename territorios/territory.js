@@ -422,20 +422,21 @@ function fetchSheetData(map, options, infoWindow) {
 		calls.push(makeSheetCall(sheet));
 	})
 
-	$.when(calls[0], calls[1], calls[2], calls[3]).done(function(territoriesResponse, historicResponse, phoneResponse, letterResponse) {
-		$.each(territoriesResponse[0].feed.entry, function(i, val) {
-			options.territories[val.gsx$territorio.$t] = {
-				name: val.gsx$territorio.$t,
-				group: val.gsx$grupo.$t,
-				date: parseDate(val.gsx$fecha.$t),
-				dateStr: val.gsx$fecha.$t,
-				inaccessible: val.gsx$inaccesible.$t == "Sí",
-				isComplete: val.gsx$completado.$t == "Sí",
-				blocks: val.gsx$manzanas.$t,
-				notes: val.gsx$notas.$t,
-				colors: {}
-			};
-		});
+	$.when(calls[0], calls[1], calls[2], calls[3])
+		.done(function(territoriesResponse, historicResponse, phoneResponse, letterResponse) {
+			$.each(territoriesResponse[0].feed.entry, function(i, val) {
+				options.territories[val.gsx$territorio.$t] = {
+					name: val.gsx$territorio.$t,
+					group: val.gsx$grupo.$t,
+					date: parseDate(val.gsx$fecha.$t),
+					dateStr: val.gsx$fecha.$t,
+					inaccessible: val.gsx$inaccesible.$t == "Sí",
+					isComplete: val.gsx$completado.$t == "Sí",
+					blocks: val.gsx$manzanas.$t,
+					notes: val.gsx$notas.$t,
+					colors: {}
+				};
+			});
 		$.each(historicResponse[0].feed.entry, function(i, val) {
 			options.territories[val.gsx$territorio.$t].average = val.gsx$avg.$t != "" ? parseInt(val.gsx$avg.$t): "";
 		});
