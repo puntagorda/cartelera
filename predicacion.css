@@ -72,7 +72,6 @@ body {
 
 .event .row .place a {
 	color: #424242;
-    text-decoration: none;
 }
 
 .event .row .place a:hover {
@@ -153,6 +152,10 @@ body {
 	background: rgba(255,255,255,.3);
 }
 
+.event .do-not-call {
+	margin-top: 10px;
+}
+
 .event .do-not-call .value {
 	display: inline-block;
     font-size: 14px;
@@ -160,6 +163,23 @@ body {
 
 .event .do-not-call ul {
 	margin-left: 13px;
+	margin-bottom: 10px;
+}
+
+.event .do-not-call .see-more {
+	display: inline-block;
+    border: 1px solid #424242;
+    text-decoration: none;
+    color: #424242;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 6px 0px;
+    transition: all .4s;
+    width: 96px;
+}
+
+.event .dnc-list a {
+	color: #424242;
 }
 
 .arrow-right {

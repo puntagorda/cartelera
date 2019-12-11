@@ -69,13 +69,58 @@
     	function fill(item, selector, content, link) {
     		var field = item.find(selector);
     		if (link !== undefined && link != null) {
-    			field.find(".value").text("").append($("<a target='_blank'>").attr("href", link).text(content));
+    			field
+    				.find(".value")
+    				.text("")
+    				.append(
+    					$("<a>")
+    						.attr("target", "_blank")
+    						.attr("href", link)
+    						.text(content)
+    				);
     		} else {
     			field.find(".value").text(content);
     		}
     		if (content.length == 0) {
     			field.hide();
     		}
+    	}
+    	
+    	function addDoNotCalls(territoriesData, territory, link, doNotCallField) {
+   			var hasDoNotCalls = false;
+    		var doNotCall = findTerritory(territoriesData, territory);
+			if (doNotCall != '') {
+				hasDoNotCalls = true;
+				var addressList = doNotCall.split("\n");
+				link.append(
+					$("<span>").addClass('arrow-right')
+				);
+				var ul = $("<ul>");
+				doNotCallField
+					.find(".value")
+					.append(
+						$("<ul>")
+							.addClass("dnc-list")
+							.hide()
+							.append(
+								$("<li>")
+									.text("Territorio " + territory)
+									.append(ul)
+							)		
+					);
+				$.each(addressList, function(key, value) {
+					var url = "https://www.google.com/maps/search/?api=1&query=" + value;
+					$("<li>")
+						.append(
+							$("<a>")
+    							.attr("target", "_blank")
+								.attr("href", url)
+								.text(value)
+						)
+						.appendTo(ul);
+				});
+			}
+			return hasDoNotCalls;
     	}
     	
     	function fillAssignments(item, assignments, territoriesData) {
@@ -89,28 +134,26 @@
     					.attr("href", "territorios/mapa.html?territorio=" + value)
     					.text(value)
     					.appendTo(element);
-    				var doNotCall = findTerritory(territoriesData, value);
-    				if (doNotCall != '') {
-    					hasDoNotCalls = true;
-    					var addressList = doNotCall.split("\n");
-    					link.append(
-    						$("<span>")
-    							.addClass('arrow-right')
-    					);
-    					var ul = $("<ul>");
-    					doNotCallField.find(".value").append(
-    						$("<ul>").append(
-   								$("<li>").text("Territorio " + value)
-   									.append(ul)
-   							)		
-    					);
-    					$.each(addressList, function(key, value) {
-    						$("<li>").text(value)
-    							.appendTo(ul);
-    					});
-    				}
+   					hasDoNotCalls = addDoNotCalls(territoriesData, value, link, doNotCallField);
     			});
-    			if (!hasDoNotCalls) {
+    			if (hasDoNotCalls) {
+    				doNotCallField.find(".value").prepend(
+					$("<a>")
+						.attr("href", "#")
+						.text("Ver más...")
+						.addClass("see-more")
+						.click(function (event) {
+							event.preventDefault();
+							var link = $(this);
+							if (link.text() == "Ver más...") {
+								link.text("Ver menos");
+							} else {
+								link.text("Ver más...");
+							}
+							doNotCallField.find(".value .dnc-list").slideToggle();
+						})
+				);
+    			} else {
 	    			doNotCallField.hide();
     			}
     		} else {
