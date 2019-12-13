@@ -2,9 +2,9 @@ var MAP_TYPE = {
 	ORIGINAL: 1,
 	FOCUSED: 2,
 	HEAT_MAP: 3,
-	AVERAGE: 4,
-	//PHONE: 5,
-	//LETTER: 6,
+	// AVERAGE: 4,
+	// PHONE: 5,
+	// LETTER: 6,
 	CAMPAIGN: 7
 };
 
@@ -15,7 +15,7 @@ var MAP_EXTRAS = {
 
 var mapTypes = {};
 mapTypes[MAP_TYPE.ORIGINAL] = {
-	name: "Grupos",
+	name: "Territorios",
 	legendId: "#original-legend",
 	onClick: function() {
 		showMap(options, MAP_TYPE.ORIGINAL);
@@ -30,7 +30,7 @@ mapTypes[MAP_TYPE.FOCUSED] = {
 			territory.name == options.params.territorio) {
 			return territory.colors[1];
 		}
-		return rgb(255, 255, 255);
+		return rgb(180, 180, 180);
 	},
 	onClick: function() {
 		showMap(options, MAP_TYPE.ORIGINAL);
@@ -43,27 +43,23 @@ mapTypes[MAP_TYPE.HEAT_MAP] = {
 	colorProcessor: function(territory, options) {
 		if (territory.date != "" && !territory.isComplete) {
 			//In progress
-			return rgb(100, 0, 150);
+			return rgb(255, 200, 0);
 		} else {
-			var dark = rgb(255, 40, 0);
-			var minLight = 120;
-			var maxLight = 255;
+			var percentage = 1;
 			if (territory.date != "") {
-				var percentage = (territory.date.getTime() - options.minDate.getTime()) / (options.maxDate.getTime() - options.minDate.getTime());
+				percentage = (territory.date.getTime() - options.minDate.getTime()) / (options.maxDate.getTime() - options.minDate.getTime());
 				percentage = percentage.toFixed(1);
-				var tone = minLight + (maxLight - minLight) * percentage;
-				var colorString = rgb(maxLight, tone, 0);
-				//console.log(territory.name + ": " + (percentage * 100) + "% " + colorString);
-				return colorString;
 			}
-			return dark;
+			var colorString = heatMapColorforValue(percentage);
+			console.log(territory.name + ": " + (percentage * 100) + "% " + colorString);
+			return colorString;
 		}
 	},
 	onClick: function() {
 		showMap(options, MAP_TYPE.HEAT_MAP);
 	}
 };
-
+/*
 mapTypes[MAP_TYPE.AVERAGE] = {
 	name: "Promedio",
 	legendId: "#heat-map-legend",
@@ -76,7 +72,7 @@ mapTypes[MAP_TYPE.AVERAGE] = {
 			percentage = 1 - percentage.toFixed(1);
 			var tone = minLight + (maxLight - minLight) * percentage;
 			var colorString = rgb(maxLight, tone, 0);
-			console.log(territory.name + ": " + (percentage * 100) + "% " + colorString);
+			// console.log(territory.name + ": " + (percentage * 100) + "% " + colorString);
 			return colorString;
 		}
 		return dark;
@@ -85,7 +81,7 @@ mapTypes[MAP_TYPE.AVERAGE] = {
 		showMap(options, MAP_TYPE.AVERAGE);
 	}
 };
-/*
+
 mapTypes[MAP_TYPE.PHONE] = {
 	name: "Telefónica",
 	legendId: "#campaign-legend",
@@ -127,7 +123,7 @@ mapTypes[MAP_TYPE.CAMPAIGN] = {
 			if (territory.date != "") {
 				return rgb(0, 255, 153);
 			}
-			return rgb(255, 255, 255);
+			return rgb(180, 180, 180);
 		}
 	},
 	onClick: function() {
@@ -168,6 +164,40 @@ var mapStyles = [
 function rgb(red, green, blue) {
     var decColor = 0x1000000 + Math.round(blue) + 0x100 * Math.round(green) + 0x10000 * Math.round(red);
     return '#' + decColor.toString(16).substr(1);
+}
+
+function hslToHex(h, s, l) {
+	h /= 360;
+  s /= 100;
+  l /= 100;
+  let r, g, b;
+  if (s === 0) {
+    r = g = b = l; // achromatic
+  } else {
+    const hue2rgb = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+  const toHex = x => {
+    const hex = Math.round(x * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function heatMapColorforValue(value) {
+	var h = (1.0 - value) * 240
+	return hslToHex(h, 100, 50);
 }
 
 function addTerritoryLabel(placemark, map) {
@@ -212,7 +242,7 @@ function addContent(content, title, description) {
 		if (content != "") {
 			content += "<br/>";
 		}
-		content += "<b>" + title + "</b>: " + description;
+		content += "<b>" + title + "</b> " + description;
 	}
 	return content;
 }
@@ -232,10 +262,17 @@ function addTerritoryInfoWindow(infoWindow, placemark, territories, map) {
 	var territory = territories[placemark.name];
 	var title = "Territorio " + placemark.name;
 	var description = "";
-	description = addContent(description, "Fecha", territory.dateStr);
+	var dateLabel = "";
+	if (territory.isComplete) {
+		dateLabel = "Terminado";
+	} else {
+		dateLabel = "Comenzado";
+	}
+	description = addContent(description, dateLabel, territory.dateStr);
 	// description = addContent(description, "Completado", territory.isComplete ? "Sí" : "No");
-	description = addContent(description, "Manzanas", territory.blocks);
+	description = addContent(description, "Manzanas hechas", territory.blocks);
 	description = addContent(description, "Notas", territory.notes);
+	description = addContent(description, "No visitar<br/>", territory.doNotCall.split("\n").join("<br/>"));
 	addInfoWindow(map, placemark.polygon, infoWindow, placemark.polygon.bounds.getCenter(), title, description);
 }
 
@@ -261,6 +298,7 @@ function processPolygon(index, placemark, map, infoWindow, options, mapType) {
 		} else {
 			territory.colors[mapType] = mapTypes[mapType].colorProcessor(territory, options);
 		}
+		placemark.polygon.strokeColor = territory.colors[mapType];
 		placemark.polygon.fillColor = territory.colors[mapType];
 		addTerritoryInfoWindow(infoWindow, placemark, options.territories, map);
 	}
@@ -295,8 +333,9 @@ function processTerritories(doc, map, infoWindow, options, mapType) {
     var geoXmlDoc = doc[0];
 	if (!options.alreadyRun) {
 		addTerritoryLabels(geoXmlDoc, map, options);
-		console.log("maxDate = " + options.maxDate + "; minDate = " + options.minDate);
-		console.log("maxAverage = " + options.maxAverage + "; minAverage = " + options.minAverage);
+		console.log("maxDate = " + options.maxDate);
+		console.log("minDate = " + options.minDate);
+		// console.log("maxAverage = " + options.maxAverage + "; minAverage = " + options.minAverage);
 	}
 	options.docs[mapType] = geoXmlDoc;
 
@@ -318,6 +357,7 @@ function fetchTerritoriesKmz(map, infoWindow, options, mapType) {
 		suppressInfoWindows: true,
         afterParse: function afterParse(doc) {
             processTerritories(doc, map, infoWindow, options, mapType);
+			$("#show-location").show();
         }
     });
     geoXmlLayer.parse('territories.kml');
@@ -403,7 +443,8 @@ function parseDate(dateString) {
 }
 
 function makeSheetCall(sheetId) {
-	var url = "https://spreadsheets.google.com/feeds/list/1_RSPPwcclJjDCUb8v1_4yb8_Q5Mt5PH6E0rvG34iKsw/" + sheetId + "/public/values?alt=json";
+	// https://spreadsheets.google.com/feeds/worksheets/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/private/full
+	var url = "https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/" + sheetId + "/public/values?alt=json";
 	return $.ajax({ 
 	  dataType: "json",
 	  url: url,
@@ -414,36 +455,32 @@ function makeSheetCall(sheetId) {
 
 function fetchSheetData(map, options, infoWindow) {
 	var sheets = {
-		territoriesId: "o2kur1k",
-		historicId: "oa3ntla"
+		territoriesId: "oacl51w"
 	}
 	var calls = [];
 	$.each(sheets, function(index, sheet) {
 		calls.push(makeSheetCall(sheet));
 	})
 
-	$.when(calls[0], calls[1], calls[2], calls[3])
-		.done(function(territoriesResponse, historicResponse, phoneResponse, letterResponse) {
-			$.each(territoriesResponse[0].feed.entry, function(i, val) {
+	$.when(calls[0])
+		.done(function(territoriesResponse) {
+			$.each(territoriesResponse.feed.entry, function(i, val) {
 				options.territories[val.gsx$territorio.$t] = {
 					name: val.gsx$territorio.$t,
-					group: val.gsx$grupo.$t,
 					date: parseDate(val.gsx$fecha.$t),
 					dateStr: val.gsx$fecha.$t,
-					inaccessible: val.gsx$inaccesible.$t == "Sí",
-					isComplete: val.gsx$completado.$t == "Sí",
+					isComplete: val.gsx$terminado.$t == "TRUE",
 					blocks: val.gsx$manzanas.$t,
 					notes: val.gsx$notas.$t,
+					doNotCall: val.gsx$novisitar.$t,
 					colors: {}
 				};
 			});
-		$.each(historicResponse[0].feed.entry, function(i, val) {
-			options.territories[val.gsx$territorio.$t].average = val.gsx$avg.$t != "" ? parseInt(val.gsx$avg.$t): "";
-		});
 		
 		fetchExtraKmz(
 			'lugares/doc.kml', map, infoWindow, options, MAP_EXTRAS.PLACES, createPlaceContent, null, createMarker
 		);
+		
 		fetchExtraKmz(
 			'manzanas/doc.kml', map, infoWindow, options, MAP_EXTRAS.BLOCKS, null, processBlocks, null
 		);
@@ -662,7 +699,7 @@ jQuery(document).ready(function () {
 	    map.controls[google.maps.ControlPosition.TOP_LEFT].push(control);
 		$(control).css("z-index", 1);
 	});	
-	map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($("#show-location")[0]);
+	map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($("#show-location").hide()[0]);
 	
 	var infoWindow = new google.maps.InfoWindow();
 	loadMapType(options);
