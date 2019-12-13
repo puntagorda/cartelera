@@ -45,14 +45,16 @@ mapTypes[MAP_TYPE.HEAT_MAP] = {
 			//In progress
 			return rgb(255, 200, 0);
 		} else {
-			var percentage = 1;
 			if (territory.date != "") {
-				percentage = (territory.date.getTime() - options.minDate.getTime()) / (options.maxDate.getTime() - options.minDate.getTime());
+				var percentage = (territory.date.getTime() - options.minDate.getTime()) / (options.maxDate.getTime() - options.minDate.getTime());
 				percentage = percentage.toFixed(1);
+				var red = 255 * percentage;
+				var blue = 255 * (1 - percentage);
+				var colorString = rgb(red, 0, blue);
+				console.log(territory.name + ": " + (percentage * 100) + "% " + colorString);
+				return colorString;
 			}
-			var colorString = heatMapColorforValue(percentage);
-			console.log(territory.name + ": " + (percentage * 100) + "% " + colorString);
-			return colorString;
+			return rgb(255, 0, 0);
 		}
 	},
 	onClick: function() {
@@ -166,53 +168,20 @@ function rgb(red, green, blue) {
     return '#' + decColor.toString(16).substr(1);
 }
 
-function hslToHex(h, s, l) {
-	h /= 360;
-  s /= 100;
-  l /= 100;
-  let r, g, b;
-  if (s === 0) {
-    r = g = b = l; // achromatic
-  } else {
-    const hue2rgb = (p, q, t) => {
-      if (t < 0) t += 1;
-      if (t > 1) t -= 1;
-      if (t < 1 / 6) return p + (q - p) * 6 * t;
-      if (t < 1 / 2) return q;
-      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-      return p;
-    };
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    const p = 2 * l - q;
-    r = hue2rgb(p, q, h + 1 / 3);
-    g = hue2rgb(p, q, h);
-    b = hue2rgb(p, q, h - 1 / 3);
-  }
-  const toHex = x => {
-    const hex = Math.round(x * 255).toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-  };
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-
-function heatMapColorforValue(value) {
-	var h = (1.0 - value) * 240
-	return hslToHex(h, 100, 50);
-}
-
 function addTerritoryLabel(placemark, map) {
 	new MapLabel({
 		text: placemark.name,
 		position: placemark.polygon.bounds.getCenter(),
 		map: map,
 		fontSize: 16,
-		fontColor: placemark.polygon.fillColor,
+		fontColor: rgb(0, 0, 0),// placemark.polygon.fillColor,
 		align: 'right',
 		minZoom: 15
 	});
 }
 
 function addTerritoryLabels(geoXmlDoc, map, options) {
+	options.maxDate = new Date();
 	$.each(geoXmlDoc.placemarks, function (index, placemark) {
 		if (placemark.polygon) {
 			addTerritoryLabel(placemark, map);
@@ -221,9 +190,9 @@ function addTerritoryLabels(geoXmlDoc, map, options) {
 				if (options.minDate.getTime() > territory.date.getTime()) {
 					options.minDate = territory.date;
 				}
-				if (options.maxDate.getTime() < territory.date.getTime()) {
-					options.maxDate = territory.date;
-				}
+				// if (options.maxDate.getTime() < territory.date.getTime()) {
+				//	options.maxDate = territory.date;
+				// }
 			}
 			if (territory.average != "") {
 				if (options.minAverage > territory.average) {
