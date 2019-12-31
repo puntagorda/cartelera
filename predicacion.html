@@ -4,7 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta charset="UTF-8">
-    <title>Congregación Punta Gorda: Predicación</title>
+    <title>Predicación</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="predicacion.css">
 </head>
@@ -131,6 +131,7 @@
     			var hasDoNotCalls = false;
     			$.each(assignments, function(key, value) {
     				var link = $("<a>")
+    					.attr("target", "_blank")
     					.attr("href", "territorios/mapa.html?territorio=" + value)
     					.text(value)
     					.appendTo(element);
