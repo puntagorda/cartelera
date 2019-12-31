@@ -135,6 +135,10 @@ body {
     text-decoration: underline;
 }
 
+.event .notes {
+	font-size: 14px;
+}
+
 .event .row {
 	background: #d2fbe7;
 	border-radius: 5px;
