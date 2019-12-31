@@ -200,48 +200,48 @@
 			var placesData = JSON.parse(placesRequest.responseText);
 			var assignmentsData = JSON.parse(assignmentsRequest.responseText);
 			var territoriesData = JSON.parse(territoriesRequest.responseText);
-			var formattedgroupsData = {};
+			var formattedGroupsData = {};
 			var template = $(".event");
+			var phoneLink = "https://wa.me/598";
 
 			for (var i = 0; i < groupsData.feed.entry.length; i++) {
 				var entry = groupsData.feed.entry[i];
-				var day = entry.gsx$día.$t;
-				var hour = entry.gsx$hora.$t;
-				var conductor = entry.gsx$conductor.$t;
-				var auxiliar = entry.gsx$auxiliar.$t;
-				var place = entry.gsx$lugar.$t;
-				var notes = entry.gsx$notas.$t;
-				if (formattedgroupsData[day] === undefined) {
-					formattedgroupsData[day] = [];
+				var day = entry.gsx$fecha.$t;
+				if (formattedGroupsData[day] === undefined) {
+					formattedGroupsData[day] = [];
 				}
-				formattedgroupsData[day].push({
+				formattedGroupsData[day].push({
 					"hour": entry.gsx$hora.$t,
 					"conductor": entry.gsx$conductor.$t,
 					"auxiliar": entry.gsx$auxiliar.$t,
+					"conductorPhone": entry.gsx$teléfonoconductor.$t.slice(1).replace(/ /g, ""),
+					"auxiliarPhone": entry.gsx$teléfonoauxiliar.$t.slice(1).replace(/ /g, ""),
 					"place": entry.gsx$lugar.$t,
 					"notes": entry.gsx$notas.$t,
-					"assignments": findAssignment(assignmentsData, day, hour, entry.gsx$lugar.$t)
+					"assignments": findAssignment(assignmentsData, day, entry.gsx$hora.$t, entry.gsx$lugar.$t)
 				});
 		
 			}
-			for (var day in formattedgroupsData) {
+			for (var day in formattedGroupsData) {
 				var item = template.clone();
-				var date = day.split(" ");
-				var today = new Date().getDate();
-				if (date[1] >= today) {
-					fill(item, ".number", date[1]);
-					fill(item, ".date", date[0]);
-					var times = formattedgroupsData[day];
+				var splittedDay = day.split("/");
+				var date = new Date(splittedDay[2] + "-" + splittedDay[1] + "-" + splittedDay[0]);
+				var today = new Date();
+				if (date >= today) {
+					fill(item, ".number", date.getDate());
+					fill(item, ".date", date.toLocaleString('es', {  weekday: 'long' }));
+					var times = formattedGroupsData[day];
 					var templateRow = item.find(".row").clone();
 					item.find(".row").remove();
 					for (var i in times) {
 						var row = templateRow.clone();
-						fill(row, ".time", times[i].hour);
-						fill(row, ".place", times[i].place, findPlace(placesData, times[i].place));
-						fill(row, ".cond", times[i].conductor);
-						fill(row, ".aux", times[i].auxiliar);
-						fill(row, ".notes", times[i].notes);
-						fillAssignments(row, times[i].assignments, territoriesData);
+						var time = times[i];
+						fill(row, ".time", time.hour);
+						fill(row, ".place", time.place, findPlace(placesData, time.place));
+						fill(row, ".cond", time.conductor, phoneLink + time.conductorPhone);
+						fill(row, ".aux", time.auxiliar, phoneLink + time.auxiliarPhone);
+						fill(row, ".notes", time.notes);
+						fillAssignments(row, time.assignments, territoriesData);
 						item.find(".rows").append(row);
 					}
 					item.show();

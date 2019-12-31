@@ -124,6 +124,17 @@ body {
 	margin-bottom: 6px;
 }
 
+.event .cond a,
+.event .aux a {
+	color: #424242;
+}
+
+.event .cond a:hover,
+.event .aux a:hover {
+	color: #424242;
+    text-decoration: underline;
+}
+
 .event .row {
 	background: #d2fbe7;
 	border-radius: 5px;
