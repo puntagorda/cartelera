@@ -172,15 +172,10 @@
     		return null;
     	}
     	
-    	function findAssignment(data, day, hour, place) {
+    	function findAssignment(data) {
     		var assignments = [];
-    		for (var i in data.feed.entry) {
-    			if (data.feed.entry[i].gsx$fecha.$t == day && 
-    				data.feed.entry[i].gsx$hora.$t == hour &&
-    				data.feed.entry[i].gsx$lugar.$t == place &&
-    				data.feed.entry[i].gsx$asignado.$t != "") {
-    				assignments.push(data.feed.entry[i].gsx$asignado.$t);
-    			}
+    		if (data != '') {
+    			assignments = data.split(",")
     		}
     		return assignments;
     	}
@@ -195,65 +190,64 @@
     		return '';
     	}
     	
-    	function processData(groupsRequest, placesRequest, assignmentsRequest, territoriesRequest) {
+    	function processData(groupsRequest, placesRequest, territoriesRequest) {
     		var groupsData = JSON.parse(groupsRequest.responseText);
 			var placesData = JSON.parse(placesRequest.responseText);
-			var assignmentsData = JSON.parse(assignmentsRequest.responseText);
 			var territoriesData = JSON.parse(territoriesRequest.responseText);
 			var formattedGroupsData = {};
 			var template = $(".event");
 			var phoneLink = "https://wa.me/598";
+			var today = new Date(new Date().getDate(), new Date().getMonth(), new Date().getYear());
 
 			for (var i = 0; i < groupsData.feed.entry.length; i++) {
 				var entry = groupsData.feed.entry[i];
 				var day = entry.gsx$fecha.$t;
-				if (formattedGroupsData[day] === undefined) {
-					formattedGroupsData[day] = [];
+				var splittedDay = day.split("/");
+				var formattedDate = splittedDay[2] + "-" + splittedDay[1] + "-" + splittedDay[0];
+				var date = new Date(formattedDate);
+				if (date >= today) {
+					if (formattedGroupsData[formattedDate] === undefined) {
+						formattedGroupsData[formattedDate] = [];
+					}
+					formattedGroupsData[formattedDate].push({
+						"hour": entry.gsx$hora.$t,
+						"conductor": entry.gsx$conductor.$t,
+						"auxiliar": entry.gsx$auxiliar.$t,
+						"conductorPhone": entry.gsx$teléfonoconductor.$t.slice(1).replace(/ /g, ""),
+						"auxiliarPhone": entry.gsx$teléfonoauxiliar.$t.slice(1).replace(/ /g, ""),
+						"place": entry.gsx$lugar.$t,
+						"notes": entry.gsx$notas.$t,
+						"assignments": findAssignment(entry.gsx$territorios.$t),
+					});
 				}
-				formattedGroupsData[day].push({
-					"hour": entry.gsx$hora.$t,
-					"conductor": entry.gsx$conductor.$t,
-					"auxiliar": entry.gsx$auxiliar.$t,
-					"conductorPhone": entry.gsx$teléfonoconductor.$t.slice(1).replace(/ /g, ""),
-					"auxiliarPhone": entry.gsx$teléfonoauxiliar.$t.slice(1).replace(/ /g, ""),
-					"place": entry.gsx$lugar.$t,
-					"notes": entry.gsx$notas.$t,
-					"assignments": findAssignment(assignmentsData, day, entry.gsx$hora.$t, entry.gsx$lugar.$t)
-				});
-		
 			}
 			for (var day in formattedGroupsData) {
+				var date = new Date(day);
 				var item = template.clone();
-				var splittedDay = day.split("/");
-				var date = new Date(splittedDay[2] + "-" + splittedDay[1] + "-" + splittedDay[0]);
-				var today = new Date();
-				if (date >= today) {
-					fill(item, ".number", date.getDate());
-					fill(item, ".date", date.toLocaleString('es', {  weekday: 'long' }));
-					var times = formattedGroupsData[day];
-					var templateRow = item.find(".row").clone();
-					item.find(".row").remove();
-					for (var i in times) {
-						var row = templateRow.clone();
-						var time = times[i];
-						fill(row, ".time", time.hour);
-						fill(row, ".place", time.place, findPlace(placesData, time.place));
-						fill(row, ".cond", time.conductor, phoneLink + time.conductorPhone);
-						fill(row, ".aux", time.auxiliar, phoneLink + time.auxiliarPhone);
-						fill(row, ".notes", time.notes);
-						fillAssignments(row, time.assignments, territoriesData);
-						item.find(".rows").append(row);
-					}
-					item.show();
-					$("#table").append(item);
+				fill(item, ".number", date.getDate());
+				fill(item, ".date", date.toLocaleString('es', {  weekday: 'long' }));
+				var times = formattedGroupsData[day];
+				var templateRow = item.find(".row").clone();
+				item.find(".row").remove();
+				for (var i in times) {
+					var row = templateRow.clone();
+					var time = times[i];
+					fill(row, ".time", time.hour);
+					fill(row, ".place", time.place, findPlace(placesData, time.place));
+					fill(row, ".cond", time.conductor, phoneLink + time.conductorPhone);
+					fill(row, ".aux", time.auxiliar, phoneLink + time.auxiliarPhone);
+					fill(row, ".notes", time.notes);
+					fillAssignments(row, time.assignments, territoriesData);
+					item.find(".rows").append(row);
 				}
+				item.show();
+				$("#table").append(item);
 			}
     	}
     
         function groups() {
         	var groups = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/5/public/values?alt=json';
         	var places = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/14/public/values?alt=json';
-        	var assignments = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/1/public/values?alt=json';
         	var territories = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/10/public/values?alt=json';
         
             var groupsRequest = new XMLHttpRequest();
@@ -264,20 +258,13 @@
 				placesRequest.open('GET', places);
 				placesRequest.onload = function() {
 
-					var assignmentsRequest = new XMLHttpRequest();
-					assignmentsRequest.open('GET', assignments);
-					assignmentsRequest.onload = function() {
-				
-						var territoriesRequest = new XMLHttpRequest();
-						territoriesRequest.open('GET', territories);
-						territoriesRequest.onload = function() {
-				
-							processData(groupsRequest, placesRequest, assignmentsRequest, territoriesRequest);
-						}
-						territoriesRequest.send();
-						
+					var territoriesRequest = new XMLHttpRequest();
+					territoriesRequest.open('GET', territories);
+					territoriesRequest.onload = function() {
+						processData(groupsRequest, placesRequest, territoriesRequest);
 					}
-					assignmentsRequest.send();
+					territoriesRequest.send();
+						
                 }
             	placesRequest.send();
                 
