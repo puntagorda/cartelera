@@ -204,7 +204,7 @@
 				var day = entry.gsx$fecha.$t;
 				var splittedDay = day.split("/");
 				var formattedDate = splittedDay[2] + "-" + splittedDay[1] + "-" + splittedDay[0];
-				var date = new Date(formattedDate);
+				var date = new Date(splittedDay[2], + splittedDay[1], splittedDay[0]);
 				if (date >= today) {
 					if (formattedGroupsData[formattedDate] === undefined) {
 						formattedGroupsData[formattedDate] = [];
@@ -222,7 +222,7 @@
 				}
 			}
 			for (var day in formattedGroupsData) {
-				var date = new Date(day);
+				var date = new Date(day.split("-"));
 				var item = template.clone();
 				fill(item, ".number", date.getDate());
 				fill(item, ".date", date.toLocaleString('es', {  weekday: 'long' }));
