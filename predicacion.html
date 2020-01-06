@@ -197,19 +197,18 @@
 			var formattedGroupsData = {};
 			var template = $(".event");
 			var phoneLink = "https://wa.me/598";
-			var today = new Date(new Date().getDate(), new Date().getMonth(), new Date().getYear());
+			var today = new Date(1900 + new Date().getYear(), new Date().getMonth(), new Date().getDate());
 
 			for (var i = 0; i < groupsData.feed.entry.length; i++) {
 				var entry = groupsData.feed.entry[i];
 				var day = entry.gsx$fecha.$t;
 				var splittedDay = day.split("/");
-				var formattedDate = splittedDay[2] + "-" + splittedDay[1] + "-" + splittedDay[0];
-				var date = new Date(splittedDay[2], + splittedDay[1], splittedDay[0]);
+				var date = new Date(splittedDay[2], splittedDay[1] - 1, splittedDay[0]);
 				if (date >= today) {
-					if (formattedGroupsData[formattedDate] === undefined) {
-						formattedGroupsData[formattedDate] = [];
+					if (formattedGroupsData[date] === undefined) {
+						formattedGroupsData[date] = [];
 					}
-					formattedGroupsData[formattedDate].push({
+					formattedGroupsData[date].push({
 						"hour": entry.gsx$hora.$t,
 						"conductor": entry.gsx$conductor.$t,
 						"auxiliar": entry.gsx$auxiliar.$t,
@@ -222,7 +221,7 @@
 				}
 			}
 			for (var day in formattedGroupsData) {
-				var date = new Date(day.split("-"));
+				var date = new Date(day);
 				var item = template.clone();
 				fill(item, ".number", date.getDate());
 				fill(item, ".date", date.toLocaleString('es', {  weekday: 'long' }));
