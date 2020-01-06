@@ -21,14 +21,14 @@ body {
     border: 1px solid #fff;
     text-decoration: none;
     color: #fff;
-    margin: 15px auto;
+    margin: 15px auto 0 auto;
     padding: 12px;
-    transition: all .4s;
 }
 
 .button:hover {
 	background: rgba(255,255,255,.3);
     border-color: rgba(255,255,255,.3);
+    transition: all .4s;
 }
 
 .event {
