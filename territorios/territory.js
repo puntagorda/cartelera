@@ -54,7 +54,7 @@ mapTypes[MAP_TYPE.HEAT_MAP] = {
 				console.log(territory.name + ": " + (percentage * 100) + "% " + colorString);
 				return colorString;
 			}
-			return rgb(255, 0, 0);
+			return rgb(0, 0, 255);
 		}
 	},
 	onClick: function() {
