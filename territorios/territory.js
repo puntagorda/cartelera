@@ -186,20 +186,22 @@ function addTerritoryLabels(geoXmlDoc, map, options) {
 		if (placemark.polygon) {
 			addTerritoryLabel(placemark, map);
 			var territory = options.territories[placemark.name];
-			if (territory.date != "") {
-				if (options.minDate.getTime() > territory.date.getTime()) {
-					options.minDate = territory.date;
+			if (territory !== undefined) {
+				if (territory.date != "") {
+					if (options.minDate.getTime() > territory.date.getTime()) {
+						options.minDate = territory.date;
+					}
+					// if (options.maxDate.getTime() < territory.date.getTime()) {
+					//	options.maxDate = territory.date;
+					// }
 				}
-				// if (options.maxDate.getTime() < territory.date.getTime()) {
-				//	options.maxDate = territory.date;
-				// }
-			}
-			if (territory.average != "") {
-				if (options.minAverage > territory.average) {
-					options.minAverage = territory.average;
-				}
-				if (options.maxAverage < territory.average) {
-					options.maxAverage = territory.average;
+				if (territory.average != "") {
+					if (options.minAverage > territory.average) {
+						options.minAverage = territory.average;
+					}
+					if (options.maxAverage < territory.average) {
+						options.maxAverage = territory.average;
+					}
 				}
 			}
 		}
@@ -260,16 +262,21 @@ function calculateGroupCoordinates(options, territory, placemark) {
 function processPolygon(index, placemark, map, infoWindow, options, mapType) {
 	if (placemark.polygon) {
 		var territory = options.territories[placemark.name];
-		territory.description = placemark.description;
-		if (mapType == MAP_TYPE.ORIGINAL) {
-			territory.colors[mapType] = placemark.polygon.fillColor;
-			calculateGroupCoordinates(options, territory, placemark);
+		if (territory !== undefined) {
+			territory.description = placemark.description;
+			if (mapType == MAP_TYPE.ORIGINAL) {
+				territory.colors[mapType] = placemark.polygon.fillColor;
+				calculateGroupCoordinates(options, territory, placemark);
+			} else {
+				territory.colors[mapType] = mapTypes[mapType].colorProcessor(territory, options);
+			}
+			placemark.polygon.strokeColor = territory.colors[mapType];
+			placemark.polygon.fillColor = territory.colors[mapType];
+			addTerritoryInfoWindow(infoWindow, placemark, options.territories, map);
 		} else {
-			territory.colors[mapType] = mapTypes[mapType].colorProcessor(territory, options);
+			placemark.polygon.strokeColor = rgb(180, 180, 180);
+			placemark.polygon.fillColor = rgb(180, 180, 180);
 		}
-		placemark.polygon.strokeColor = territory.colors[mapType];
-		placemark.polygon.fillColor = territory.colors[mapType];
-		addTerritoryInfoWindow(infoWindow, placemark, options.territories, map);
 	}
 }
 
