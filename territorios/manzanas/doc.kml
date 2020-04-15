@@ -2400,47 +2400,7 @@
       <styleUrl>#icon-1739-4E342E</styleUrl>
       <Point>
         <coordinates>
-          -56.0981327,-34.8701531,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>D</name>
-      <description>Territorio 49</description>
-      <styleUrl>#icon-1739-4E342E</styleUrl>
-      <Point>
-        <coordinates>
-          -56.0991949,-34.8699066,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>E</name>
-      <description>Territorio 49</description>
-      <styleUrl>#icon-1739-4E342E</styleUrl>
-      <Point>
-        <coordinates>
-          -56.0979503,-34.8695149,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>F</name>
-      <description>Territorio 49</description>
-      <styleUrl>#icon-1739-4E342E</styleUrl>
-      <Point>
-        <coordinates>
-          -56.0989213,-34.8695105,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>G</name>
-      <description>Territorio 49</description>
-      <styleUrl>#icon-1739-4E342E</styleUrl>
-      <Point>
-        <coordinates>
-          -56.0988033,-34.8690836,0
+          -56.0982722,-34.8696338,0
         </coordinates>
       </Point>
     </Placemark>
@@ -2520,7 +2480,7 @@
       <styleUrl>#icon-1739-4E342E</styleUrl>
       <Point>
         <coordinates>
-          -56.0923231,-34.867673,0
+          -56.0921944,-34.8672417,0
         </coordinates>
       </Point>
     </Placemark>
@@ -2530,22 +2490,12 @@
       <styleUrl>#icon-1739-4E342E</styleUrl>
       <Point>
         <coordinates>
-          -56.0929453,-34.8673737,0
+          -56.0930097,-34.8675057,0
         </coordinates>
       </Point>
     </Placemark>
     <Placemark>
       <name>C</name>
-      <description>Territorio 52</description>
-      <styleUrl>#icon-1739-4E342E</styleUrl>
-      <Point>
-        <coordinates>
-          -56.0919154,-34.8664582,0
-        </coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>D</name>
       <description>Territorio 52</description>
       <styleUrl>#icon-1739-4E342E</styleUrl>
       <Point>
@@ -2641,6 +2591,16 @@
       <Point>
         <coordinates>
           -56.0766375,-34.8577981,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>C</name>
+      <description>Territorio 14</description>
+      <styleUrl>#icon-1739-4E342E</styleUrl>
+      <Point>
+        <coordinates>
+          -56.091823,-34.891314,0
         </coordinates>
       </Point>
     </Placemark>
