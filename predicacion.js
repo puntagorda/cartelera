@@ -178,9 +178,9 @@ function processData(groupsRequest, placesRequest, territoriesRequest) {
 }
 
 function groups() {
-	var groups = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/6/public/values?alt=json';
-	var places = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/16/public/values?alt=json';
-	var territories = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/11/public/values?alt=json';
+	var groups = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/7/public/values?alt=json';
+	var places = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/20/public/values?alt=json';
+	var territories = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/12/public/values?alt=json';
 
 	var groupsRequest = new XMLHttpRequest();
 	groupsRequest.open('GET', groups);
