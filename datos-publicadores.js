@@ -8,7 +8,7 @@ function processParams() {
 
 function loadPublishers() {
 
-	var url = 'https://spreadsheets.google.com/feeds/list/1nao8zPNoLtF4uvZjScex3CQlUV7Je6McBIEernhYa3g/6/public/values?alt=json';
+	var url = 'https://spreadsheets.google.com/feeds/list/1nao8zPNoLtF4uvZjScex3CQlUV7Je6McBIEernhYa3g/10/public/values?alt=json';
 	var formattedData = {};
 	var params = processParams();
 	
