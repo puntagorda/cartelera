@@ -20,7 +20,7 @@ function fill(item, selector, content, link) {
 
 function addDoNotCalls(territoriesData, territory, link, doNotCallField) {
 	var hasDoNotCalls = false;
-	var doNotCall = findTerritory(territoriesData, territory);
+	var doNotCall = findTerritoryDoNotCall(territoriesData, territory);
 	if (doNotCall != '') {
 		hasDoNotCalls = true;
 		var addressList = doNotCall.split("\n");
@@ -62,9 +62,11 @@ function fillAssignments(item, assignments, territoriesData) {
 		var element = assignmentsField.find(".value").text("");
 		var hasDoNotCalls = false;
 		$.each(assignments, function(key, value) {
+			var drive = findTerritoryDrive(territoriesData, value);
 			var link = $("<a>")
 				.attr("target", "_blank")
-				.attr("href", "territorios/mapa.html?territorio=" + value)
+				// .attr("href", "territorios/mapa.html?territorio=" + value)
+				.attr("href", drive)
 				.text(value)
 				.appendTo(element);
 			hasDoNotCalls = addDoNotCalls(territoriesData, value, link, doNotCallField);
@@ -112,11 +114,21 @@ function findAssignment(data) {
 	return assignments;
 }
 
-function findTerritory(data, territory) {
+function findTerritoryDoNotCall(data, territory) {
 	var territories = [];
 	for (var i in data.feed.entry) {
 		if (data.feed.entry[i].gsx$territorio.$t == territory) {
 			return data.feed.entry[i].gsx$novisitar.$t;
+		}
+	}
+	return '';
+}
+
+function findTerritoryDrive(data, territory) {
+	var territories = [];
+	for (var i in data.feed.entry) {
+		if (data.feed.entry[i].gsx$territorio.$t == territory) {
+			return data.feed.entry[i].gsx$drive.$t;
 		}
 	}
 	return '';

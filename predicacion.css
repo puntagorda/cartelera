@@ -144,6 +144,10 @@ body {
 	border-radius: 5px;
 }
 
+.event .assignments {
+	margin-top: 8px;
+}
+
 .event .assignments .label,
 .event .do-not-call .label {
 	vertical-align: top;
