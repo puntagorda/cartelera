@@ -69,7 +69,7 @@ function fillAssignments(item, assignments, territoriesData) {
 				.attr("href", drive)
 				.text(value)
 				.appendTo(element);
-			hasDoNotCalls = addDoNotCalls(territoriesData, value, link, doNotCallField);
+			// hasDoNotCalls = addDoNotCalls(territoriesData, value, link, doNotCallField);
 		});
 		if (hasDoNotCalls) {
 			doNotCallField.find(".value").prepend(
@@ -98,9 +98,9 @@ function fillAssignments(item, assignments, territoriesData) {
 }
 
 function findPlace(data, place) {
-	for (var i in data.feed.entry) {
-		if (data.feed.entry[i].gsx$lugar.$t == place) {
-			return data.feed.entry[i].gsx$url.$t;
+	for (var i in data.values) {
+		if (data.values[i][0] == place) {
+			return data.values[i][1];
 		}
 	}
 	return null;
@@ -108,7 +108,7 @@ function findPlace(data, place) {
 
 function findAssignment(data) {
 	var assignments = [];
-	if (data != '') {
+	if (data !== undefined) {
 		assignments = data.split(",")
 	}
 	return assignments;
@@ -116,9 +116,9 @@ function findAssignment(data) {
 
 function findTerritoryDoNotCall(data, territory) {
 	var territories = [];
-	for (var i in data.feed.entry) {
-		if (data.feed.entry[i].gsx$territorio.$t == territory) {
-			return data.feed.entry[i].gsx$novisitar.$t;
+	for (var i in data.values) {
+		if (data.values[i][0] == territory) {
+			return data.values[i][1];
 		}
 	}
 	return '';
@@ -126,9 +126,9 @@ function findTerritoryDoNotCall(data, territory) {
 
 function findTerritoryDrive(data, territory) {
 	var territories = [];
-	for (var i in data.feed.entry) {
-		if (data.feed.entry[i].gsx$territorio.$t == territory) {
-			return data.feed.entry[i].gsx$drive.$t;
+	for (var i in data.values) {
+		if (data.values[i][0] == territory) {
+			return data.values[i][6];
 		}
 	}
 	return '';
@@ -143,9 +143,9 @@ function processData(groupsRequest, placesRequest, territoriesRequest) {
 	var phoneLink = "https://wa.me/598";
 	var today = new Date(1900 + new Date().getYear(), new Date().getMonth(), new Date().getDate());
 
-	for (var i = 0; i < groupsData.feed.entry.length; i++) {
-		var entry = groupsData.feed.entry[i];
-		var day = entry.gsx$fecha.$t;
+	for (var i = 1; i < groupsData.values.length; i++) {
+		var entry = groupsData.values[i];
+		var day = entry[0];
 		var splittedDay = day.split("/");
 		var date = new Date(splittedDay[2], splittedDay[1] - 1, splittedDay[0]);
 		if (date >= today) {
@@ -153,14 +153,14 @@ function processData(groupsRequest, placesRequest, territoriesRequest) {
 				formattedGroupsData[date] = [];
 			}
 			formattedGroupsData[date].push({
-				"hour": entry.gsx$hora.$t,
-				"conductor": entry.gsx$conductor.$t,
-				"auxiliar": entry.gsx$auxiliar.$t,
-				"conductorPhone": entry.gsx$teléfonoconductor.$t.slice(1).replace(/ /g, ""),
-				"auxiliarPhone": entry.gsx$teléfonoauxiliar.$t.slice(1).replace(/ /g, ""),
-				"place": entry.gsx$lugar.$t,
-				"notes": entry.gsx$notas.$t,
-				"assignments": findAssignment(entry.gsx$territorios.$t),
+				"hour": entry[2],
+				"conductor": entry[4],
+				"auxiliar": entry[5],
+				"conductorPhone": entry[7] === undefined ? "" : entry[7].slice(1).replace(/ /g, ""),
+				"auxiliarPhone": entry[8] === undefined ? "" : entry[8].slice(1).replace(/ /g, ""),
+				"place": entry[3],
+				"notes": entry[6],
+				"assignments": findAssignment(entry[9]),
 			});
 		}
 	}
@@ -190,9 +190,9 @@ function processData(groupsRequest, placesRequest, territoriesRequest) {
 }
 
 function groups() {
-	var groups = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/6/public/values?alt=json';
-	var places = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/20/public/values?alt=json';
-	var territories = 'https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/12/public/values?alt=json';
+	var groups = 'https://sheets.googleapis.com/v4/spreadsheets/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/values/json?key=AIzaSyDeLzgtsrTNxNrXFe7H-RxBwg8CY30X4Lk';
+	var places = 'https://sheets.googleapis.com/v4/spreadsheets/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/values/lugares_json?key=AIzaSyDeLzgtsrTNxNrXFe7H-RxBwg8CY30X4Lk';
+	var territories = 'https://sheets.googleapis.com/v4/spreadsheets/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/values/territorios?key=AIzaSyDeLzgtsrTNxNrXFe7H-RxBwg8CY30X4Lk';
 
 	var groupsRequest = new XMLHttpRequest();
 	groupsRequest.open('GET', groups);
