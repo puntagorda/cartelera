@@ -5,30 +5,29 @@
 	font-family: sans-serif;
 }
 
-body {
-}
+body { }
 
 .header {
 	background: #86d6b2;
-    text-align: center;
-    padding: 40px;
-    color: #FFFFFF;
+	text-align: center;
+	padding: 40px;
+	color: #FFFFFF;
 }
 
 .button {
 	display: block;
 	width: 150px;
-    border: 1px solid #fff;
-    text-decoration: none;
-    color: #fff;
-    margin: 15px auto 0 auto;
-    padding: 12px;
+	border: 1px solid #fff;
+	text-decoration: none;
+	color: #fff;
+	margin: 15px auto 0 auto;
+	padding: 12px;
 }
 
 .button:hover {
 	background: rgba(255,255,255,.3);
-    border-color: rgba(255,255,255,.3);
-    transition: all .4s;
+	border-color: rgba(255,255,255,.3);
+	transition: all .4s;
 }
 
 .event {
@@ -51,12 +50,24 @@ body {
 	color: #424242;
 	padding: 10px;
 	margin-bottom: 10px;
+	background: #D2FBE7;
+	border-radius: 5px;
+}
+
+.event .row.highlight_1 { 
+	background: #92E8BF; 
+}
+.event .row.highlight_2 { 
+	background: #E8E0A9; 
+}
+.event .row.highlight_3 { 
+	background: #D8D2FC; 
 }
 
 .event .row .time {
 	margin-bottom: 4px;
-    font-size: 4vw;
-    display: flex;
+	font-size: 4vw;
+	display: flex;
 }
 
 .event .row .place {
@@ -69,14 +80,13 @@ body {
 .event .row .place img { 
 	width: 20px; 
 }
-
-.event .row .place a {
-	color: #424242;
+.event .row .place a { 
+	color: #424242; 
 }
 
 .event .row .place a:hover {
 	color: #424242;
-    text-decoration: underline;
+	text-decoration: underline;
 }
 
 .event .day .time img { 
@@ -99,9 +109,8 @@ body {
 .event .day .number { 
 	font-size: 25pt; 
 }
-
-.event img {
-	margin-right: 8px;
+.event img { 
+	margin-right: 8px; 
 }
 
 .event .time img {
@@ -111,11 +120,11 @@ body {
 }
 
 .event .label {
-    font-size: 11px;
-    width: 51px;
-    display: inline-block;
-    text-align: right;
-    margin-right: 8px;
+	font-size: 11px;
+	width: 51px;
+	display: inline-block;
+	text-align: right;
+	margin-right: 8px;
 }
 
 .event .cond,
@@ -125,59 +134,51 @@ body {
 }
 
 .event .cond a,
-.event .aux a {
-	color: #424242;
+.event .aux a { 
+	color: #424242; 
 }
 
 .event .cond a:hover,
 .event .aux a:hover {
 	color: #424242;
-    text-decoration: underline;
+	text-decoration: underline;
 }
 
-.event .notes {
-	font-size: 14px;
+.event .notes { 
+	font-size: 14px; 
 }
-
-.event .row {
-	background: #d2fbe7;
-	border-radius: 5px;
+.event .assignments { 
+	margin-top: 8px; 
 }
-
-.event .assignments {
-	margin-top: 8px;
-}
-
 .event .assignments .label,
-.event .do-not-call .label {
-	vertical-align: top;
+.event .do-not-call .label { 
+	vertical-align: top; 
 }
 
 .event .assignments a {
 	display: inline-block;
-    width: 18px;
-    border: 1px solid #424242;
-    text-decoration: none;
-    color: #424242;
-    text-align: center;
-    margin-right: 10px;
-    padding: 12px;
-    transition: all .4s;
-    position: relative;
-    overflow: hidden;
+	width: 18px;
+	border: 1px solid #424242;
+	text-decoration: none;
+	color: #424242;
+	text-align: center;
+	margin-right: 10px;
+	padding: 12px;
+	transition: all .4s;
+	position: relative;
+	overflow: hidden;
 }
 
-.event .assignments a:hover {
-	background: rgba(255,255,255,.3);
+.event .assignments a:hover { 
+	background: rgba(255,255,255,.3); 
 }
-
-.event .do-not-call {
-	margin-top: 10px;
+.event .do-not-call { 
+	margin-top: 10px; 
 }
 
 .event .do-not-call .value {
 	display: inline-block;
-    font-size: 14px;
+	font-size: 14px;
 }
 
 .event .do-not-call ul {
@@ -187,36 +188,36 @@ body {
 
 .event .do-not-call .see-more {
 	display: inline-block;
-    border: 1px solid #424242;
-    text-decoration: none;
-    color: #424242;
-    text-align: center;
-    margin-bottom: 10px;
-    padding: 6px 0px;
-    transition: all .4s;
-    width: 96px;
+	border: 1px solid #424242;
+	text-decoration: none;
+	color: #424242;
+	text-align: center;
+	margin-bottom: 10px;
+	padding: 6px 0px;
+	transition: all .4s;
+	width: 96px;
 }
 
-.event .dnc-list a {
-	color: #424242;
-}
+.event .dnc-list a { color: #424242; }
 
 .arrow-right {
-  background-color: #444;
-  height: 20px;
-  right: -12px;
-  position: absolute;
-  top: -12px;
-  width: 20px;
-  -webkit-transform: rotate(-45deg);
+	background-color: #444;
+	height: 20px;
+	right: -12px;
+	position: absolute;
+	top: -12px;
+	width: 20px;
+	-webkit-transform: rotate(-45deg);
 }
 
 @media screen and (min-width:750px) {
+
 	.event { 
 		width: 60%; 
 	}
+	
 	.event .row .place,
 	.event .row .time { 
-		font-size: 14pt; 
+		font-size: 14pt;
 	}
 }

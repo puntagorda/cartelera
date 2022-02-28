@@ -177,6 +177,12 @@ function processData(groupsRequest, placesRequest, territoriesRequest) {
 			var time = times[i];
 			var conductorPhone = time.conductorPhone != "" ? phoneLink + time.conductorPhone : null;
 			var auxiliarPhone = time.auxiliarPhone != "" ? phoneLink + time.auxiliarPhone : null;
+			if (time.notes == "Campaña de invitación a la Conmemoración") {
+				row.addClass("highlight_2");
+			} else if (time.notes == "Visita de circuito") {
+				row.addClass("highlight_3");
+			}
+			
 			fill(row, ".time", time.hour);
 			fill(row, ".place", time.place, findPlace(placesData, time.place));
 			fill(row, ".cond", time.conductor, conductorPhone);
