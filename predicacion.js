@@ -175,10 +175,12 @@ function processData(groupsRequest, placesRequest, territoriesRequest) {
 		for (var i in times) {
 			var row = templateRow.clone();
 			var time = times[i];
+			var conductorPhone = time.conductorPhone != "" ? phoneLink + time.conductorPhone : null;
+			var auxiliarPhone = time.auxiliarPhone != "" ? phoneLink + time.auxiliarPhone : null;
 			fill(row, ".time", time.hour);
 			fill(row, ".place", time.place, findPlace(placesData, time.place));
-			fill(row, ".cond", time.conductor, phoneLink + time.conductorPhone);
-			fill(row, ".aux", time.auxiliar, phoneLink + time.auxiliarPhone);
+			fill(row, ".cond", time.conductor, conductorPhone);
+			fill(row, ".aux", time.auxiliar, auxiliarPhone);
 			fill(row, ".notes", time.notes);
 			fillAssignments(row, time.assignments, territoriesData);
 			item.find(".rows").append(row);
