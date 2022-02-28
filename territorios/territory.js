@@ -145,16 +145,14 @@ var mapStyles = [
     "featureType": "poi",
     "elementType": "labels.icon",
     "stylers": [{
-    	// "visibility": "off"
-        "visibility": "on"
+        "visibility": "off"
     }]
   },
   {
     "featureType": "poi",
     "elementType": "labels.text",
     "stylers": [{
-    	// "visibility": "off"
-        "visibility": "on"
+        "visibility": "off"
     }]
   },
   {
@@ -220,22 +218,18 @@ function addContent(content, title, description) {
 	return content;
 }
 
-function addInfoWindow(map, element, infoWindow, position, title, description, options) {
+function addInfoWindow(map, element, infoWindow, position, title, description) {
 	google.maps.event.addListener(element, "click", function (e) {
-		/*
 		var content = "<h3>" + title + "</h3>" + description;
 		infoWindow.setOptions({
 			position: position,
 			content: content
 		});
 		infoWindow.open(map, element);
-		*/
-		element.visible = false;
-		showMap(options, 2);
 	});	
 }
 
-function addTerritoryInfoWindow(infoWindow, placemark, territories, map, options) {
+function addTerritoryInfoWindow(infoWindow, placemark, territories, map) {
 	var territory = territories[placemark.name];
 	var title = "Territorio " + placemark.name;
 	var description = "";
@@ -250,7 +244,7 @@ function addTerritoryInfoWindow(infoWindow, placemark, territories, map, options
 	description = addContent(description, "Manzanas hechas", territory.blocks);
 	description = addContent(description, "Notas", territory.notes);
 	description = addContent(description, "No visitar<br/>", territory.doNotCall.split("\n").join("<br/>"));
-	addInfoWindow(map, placemark.polygon, infoWindow, placemark.polygon.bounds.getCenter(), title, description, options);
+	addInfoWindow(map, placemark.polygon, infoWindow, placemark.polygon.bounds.getCenter(), title, description);
 }
 
 function calculateGroupCoordinates(options, territory, placemark) {
@@ -278,12 +272,7 @@ function processPolygon(index, placemark, map, infoWindow, options, mapType) {
 			}
 			placemark.polygon.strokeColor = territory.colors[mapType];
 			placemark.polygon.fillColor = territory.colors[mapType];
-			if (options.params.territorio !== undefined && 
-				territory.name == options.params.territorio) {
-				placemark.polygon.fillOpacity = 0;
-			}
-			
-			addTerritoryInfoWindow(infoWindow, placemark, options.territories, map, options);
+			addTerritoryInfoWindow(infoWindow, placemark, options.territories, map);
 		} else {
 			placemark.polygon.strokeColor = rgb(180, 180, 180);
 			placemark.polygon.fillColor = rgb(180, 180, 180);
@@ -311,7 +300,7 @@ function focusTerritory(geoXmlDoc, map, options) {
 		});
 		google.maps.event.addListenerOnce(map, 'idle', function() {
 		    map.fitBounds(bounds);
-			// google.maps.event.trigger(placemark.polygon, 'click');
+			google.maps.event.trigger(placemark.polygon, 'click');
 		});
 	}
 }
@@ -661,7 +650,7 @@ jQuery(document).ready(function () {
 		territories: [],
 		groups: [],
 		minDate: new Date(),
-		maxDate: new Date(2019, 12, 1), 
+		maxDate: new Date(2010, 1, 1), 
 		minAverage: 999,
 		maxAverage: -1,
 		extrasShown: true,
