@@ -430,8 +430,7 @@ function parseDate(dateString) {
 }
 
 function makeSheetCall(sheetId) {
-	// https://spreadsheets.google.com/feeds/worksheets/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/private/full
-	var url = "https://spreadsheets.google.com/feeds/list/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/" + sheetId + "/public/values?alt=json";
+	var url = "https://sheets.googleapis.com/v4/spreadsheets/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/values/" + sheetId + "?key=AIzaSyDeLzgtsrTNxNrXFe7H-RxBwg8CY30X4Lk";
 	return $.ajax({ 
 	  dataType: "json",
 	  url: url,
@@ -442,7 +441,7 @@ function makeSheetCall(sheetId) {
 
 function fetchSheetData(map, options, infoWindow) {
 	var sheets = {
-		territoriesId: "oacl51w"
+		territoriesId: "territorios"
 	}
 	var calls = [];
 	$.each(sheets, function(index, sheet) {
@@ -451,15 +450,15 @@ function fetchSheetData(map, options, infoWindow) {
 
 	$.when(calls[0])
 		.done(function(territoriesResponse) {
-			$.each(territoriesResponse.feed.entry, function(i, val) {
-				options.territories[val.gsx$territorio.$t] = {
-					name: val.gsx$territorio.$t,
-					date: parseDate(val.gsx$fecha.$t),
-					dateStr: val.gsx$fecha.$t,
-					isComplete: val.gsx$terminado.$t == "TRUE",
-					blocks: val.gsx$manzanas.$t,
-					notes: val.gsx$notas.$t,
-					doNotCall: val.gsx$novisitar.$t,
+			$.each(territoriesResponse.values, function(i, val) {
+				options.territories[val[0]] = {
+					name: val[0],
+					date: parseDate(val[2]),
+					dateStr: val[2],
+					isComplete: val[3] == "TRUE",
+					blocks: val[4],
+					notes: val[5],
+					doNotCall: val[6],
 					colors: {}
 				};
 			});
