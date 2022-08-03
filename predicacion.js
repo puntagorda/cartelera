@@ -1,21 +1,24 @@
 function fill(item, selector, content, link) {
 	var field = item.find(selector);
-	if (link !== undefined && link != null) {
-		field
-			.find(".value")
-			.text("")
-			.append(
-				$("<a>")
-					.attr("target", "_blank")
-					.attr("href", link)
-					.text(content)
-			);
-	} else {
-		field.find(".value").text(content);
-	}
-	if (content.length == 0) {
+	
+	if (content == null || content.length == 0) {
 		field.hide();
+		return;
 	}
+	
+	if (link === undefined || link == null) {
+		field.find(".value").text(content);
+		return;
+	}
+	
+	field.find(".value")
+		.text("")
+		.append(
+			$("<a>")
+				.attr("target", "_blank")
+				.attr("href", link)
+				.text(content)
+		);
 }
 
 function addDoNotCalls(territoriesData, territory, link, doNotCallField) {
