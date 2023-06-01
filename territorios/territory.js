@@ -243,6 +243,7 @@ function addTerritoryInfoWindow(infoWindow, placemark, territories, map) {
 	// description = addContent(description, "Completado", territory.isComplete ? "Sí" : "No");
 	description = addContent(description, "Manzanas hechas", territory.blocks);
 	// description = addContent(description, "Notas", territory.notes);
+	description += "<br/><a target='_blank' href='" + territory.link2 + "'>Casa en casa</a>";
 	description += "<br/><a target='_blank' href='" + territory.link + "'>Teléfonos</a>";
 	addInfoWindow(map, placemark.polygon, infoWindow, placemark.polygon.bounds.getCenter(), title, description);
 }
@@ -448,6 +449,7 @@ function fetchSheetData(map, options, infoWindow) {
 					blocks: val[4],
 					notes: val[5],
 					link: val[6],
+					link2: val[129],
 					colors: {}
 				};
 			});
