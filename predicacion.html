@@ -1,73 +1,75 @@
 <!DOCTYPE html>
-<html lang="esp">
+<html lang="es">
 
 <head>
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>Predicación</title>
+
+    <!-- jQuery y JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="predicacion.js"></script>
-	<link rel="stylesheet" href="spinner.css">
-	<link rel="stylesheet" href="predicacion.css">
+    <script src="predicacion.js" defer></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="spinner.css">
+    <link rel="stylesheet" href="predicacion.css">
 </head>
-<style>
-    
-</style>
 
 <body onload="groups()">
     <div class="header">
         <h2>Grupos de predicación</h2>
-        <a class="button" 
-        	href="https://docs.google.com/spreadsheets/d/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/export?exportFormat=pdf&format=pdf&portrait=true&gid=788148842&single=true"
-        	target="_blank" 
-        	download>
-    	    Descargar PDF
+        <a class="button"
+           href="https://docs.google.com/spreadsheets/d/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/export?exportFormat=pdf&format=pdf&portrait=true&gid=788148842&single=true"
+           target="_blank"
+           download>
+            Descargar PDF
         </a>
-	</div>
-	
-	<div class="lds-dual-ring"></div>
-	
+    </div>
+
+    <div class="lds-dual-ring"></div>
+
     <div id="table" class="table">
-    	<div class="event" style="display: none;">
-    		<div class="day">
-    			<div class="number"><span class="value">1</span></div>
-    			<div class="date"><span class="value">DOM</span></div>
-    		</div>
-    		<div class="rows">
-				<div class="row">
-					<div class="time">
-						<img src="images/service/noun_time_2664301.svg">
-						<span class="value">10:00</span>
-					</div>
-					<div class="place">
-						<img src="images/service/noun_place_2478983.svg">
-						<span class="value">Familia Costa</span>
-					</div>
-					<div class="cond">
-						<span class="label">Conductor </span>
-						<span class="value">Jony Costa</span>
-					</div>
-					<div class="aux">
-						<span class="label">Auxiliar </span>
-						<span class="value">Diego Grillo</span>
-					</div>
-					<div class="notes">
-						<span class="label">Notas </span>
-						<span class="value">...</span>
-					</div>
-					<div class="assignments">
-						<span class="label">Territorios </span>
-						<span class="value">
-							<a href="#" target="_blank">33<span class="arrow-right"></span></a>
-						</span>
-					</div>
-					<div class="do-not-call">
-						<span class="label">No llegar </span>
-						<span class="value"></span>
-					</div>
-				</div>
-    		</div>
-    	</div>
+        <!-- PLANTILLA OCULTA -->
+        <div class="event" style="display: none;">
+            <div class="day">
+                <div class="number"><span class="value">1</span></div>
+                <div class="date"><span class="value">DOM</span></div>
+            </div>
+            <div class="rows">
+                <div class="row">
+                    <div class="time">
+                        <img src="images/service/noun_time_2664301.svg">
+                        <span class="value">10:00</span>
+                    </div>
+                    <div class="place">
+                        <img src="images/service/noun_place_2478983.svg">
+                        <span class="value">Lugar</span>
+                    </div>
+                    <div class="cond">
+                        <span class="label">Conductor </span>
+                        <span class="value">Nombre</span>
+                    </div>
+                    <div class="aux">
+                        <span class="label">Auxiliar </span>
+                        <span class="value">Nombre</span>
+                    </div>
+                    <div class="notes">
+                        <span class="label">Notas </span>
+                        <span class="value">...</span>
+                    </div>
+                    <div class="assignments">
+                        <span class="label">Territorios </span>
+                        <span class="value">
+                            <a href="#" target="_blank">33</a>
+                        </span>
+                    </div>
+                    <div class="do-not-call">
+                        <span class="label">No llegar </span>
+                        <span class="value"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

@@ -1,76 +1,92 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-		<title>Congregación Punta Gorda: Mapa de territorios</title>
-		<link href="styles.css" rel="stylesheet" type="text/css">
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDeLzgtsrTNxNrXFe7H-RxBwg8CY30X4Lk&language=es&region=uy"/>
-		<script type="text/javascript" src="kmz/ZipFile.complete.js"></script>
-		<script type="text/javascript" src="kmz/geoxml3.js"></script>
-		<script type="text/javascript" src="ProjectedOverlay.js"></script>
-		<script type="text/javascript" src="maplabel-compiled.js"></script>
-		<script type="text/javascript" src="territory.js"></script>
-	</head>
-	<body>
-		<div id="map-canvas"></div>
-		
-		<div class="map-control">
-			<div id="map-type-combo" class="custom-control combo-chooser">
-				<span class="combo-value">Grupos</span>
-				<img src="https://maps.gstatic.com/mapfiles/arrow-down.png" draggable="false">
-			</div>
-			<div class="combo-options"></div>
-		</div>
-		
-		<div class="map-control">
-			<!--<div id="show-extras-btn" class="custom-control selected">Detalles</div>-->
-			<div id="show-legend-btn" class="custom-control">Leyenda</div>
-		</div>
-		
-		<div id="show-location" class="widget-my-location"> 
-			<button id="show-location-btn" class="widget-my-location-button">
-				<div class="widget-my-location-button-icon-common widget-my-location-cookieless widget-my-location-button-blue"></div>
-			</button>
-		</div>
-		
-		<div id="legend-box">
-			<div id="campaign-legend" class="legend-type">
-				<div class="legend-row">
-					<div id="done" class="legend-item"></div>
-					<div class="legend-title">Cubierto</div>
-				</div>
-				<div class="legend-row">
-					<div id="partial" class="legend-item"></div>
-					<div class="legend-title">Parcial</div>
-				</div>
-				<div class="legend-row">
-					<div id="toDo" class="legend-item"></div>
-					<div class="legend-title">Sin hacer</div>
-				</div>
-				<!--
-				<div class="legend-row">
-					<div id="noAccess" class="legend-item"></div>
-					<div class="legend-title">Acceso restringido</div>
-				</div>
-				-->
-			</div>
-			<div id="heat-map-legend" class="legend-type">
-				<div class="legend-row">
-					<div id="incomplete" class="legend-item"></div>
-					<div class="legend-title">Empezado</div>
-				</div>
-				<div class="legend-row">
-					<div id="no-data" class="legend-item"></div>
-					<div class="legend-title">Sin hacer</div>
-				</div>
-				<div class="legend-row">
-					<div id="recent" class="legend-item"></div>
-					<div class="legend-title">Hecho anteriormente</div>
-					<div class="legend-title">Hecho recientemente</div>
-				</div>
-			</div>
-		</div>
-	</body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Congregación Punta Gorda: Mapa de territorios</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <link href="styles.css" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="kmz/ZipFile.complete.js"></script>
+  <script type="text/javascript" src="kmz/geoxml3.js"></script>
+  <script>
+    function loadAfterGoogleMaps() {
+      const scripts = [
+        "ProjectedOverlay.js",
+        "maplabel-compiled.js",
+        "territory.js"
+      ];
+      let loaded = 0;
+      for (let i = 0; i < scripts.length; i++) {
+        const script = document.createElement("script");
+        script.src = scripts[i];
+        script.onload = () => {
+          loaded++;
+          if (loaded === scripts.length && typeof window.initMap === "function") {
+            window.initMap(); // Llama a la real initMap desde territory.js
+          }
+        };
+        document.body.appendChild(script);
+      }
+    }
+  </script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW3WZFf8NlvpAyElK0aGtW4Vhm9fPG1_w&language=es&region=uy&callback=loadAfterGoogleMaps"
+    async
+    defer
+  ></script>
+</head>
+
+<body>
+  <div id="map-canvas"></div>
+
+  <div class="map-control">
+    <div id="map-type-combo" class="custom-control combo-chooser">
+      <span class="combo-value">Grupos</span>
+      <img src="https://maps.gstatic.com/mapfiles/arrow-down.png" draggable="false">
+    </div>
+    <div class="combo-options"></div>
+  </div>
+
+  <div class="map-control">
+    <div id="show-legend-btn" class="custom-control">Leyenda</div>
+  </div>
+
+  <div id="show-location" class="widget-my-location"> 
+    <button id="show-location-btn" class="widget-my-location-button">
+      <div class="widget-my-location-button-icon-common widget-my-location-cookieless widget-my-location-button-blue"></div>
+    </button>
+  </div>
+
+  <div id="legend-box">
+    <div id="campaign-legend" class="legend-type">
+      <div class="legend-row">
+        <div id="done" class="legend-item"></div>
+        <div class="legend-title">Cubierto</div>
+      </div>
+      <div class="legend-row">
+        <div id="partial" class="legend-item"></div>
+        <div class="legend-title">Parcial</div>
+      </div>
+      <div class="legend-row">
+        <div id="toDo" class="legend-item"></div>
+        <div class="legend-title">Sin hacer</div>
+      </div>
+    </div>
+    <div id="heat-map-legend" class="legend-type">
+      <div class="legend-row">
+        <div id="incomplete" class="legend-item"></div>
+        <div class="legend-title">Empezado</div>
+      </div>
+      <div class="legend-row">
+        <div id="no-data" class="legend-item"></div>
+        <div class="legend-title">Sin hacer</div>
+      </div>
+      <div class="legend-row">
+        <div id="recent" class="legend-item"></div>
+        <div class="legend-title">Hecho anteriormente</div>
+        <div class="legend-title">Hecho recientemente</div>
+      </div>
+    </div>
+  </div>
+</body>
 </html>

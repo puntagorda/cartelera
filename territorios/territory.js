@@ -1,164 +1,125 @@
+// Defino MAP_TYPE antes de usarlo
 var MAP_TYPE = {
-	ORIGINAL: 1,
-	FOCUSED: 2,
-	HEAT_MAP: 3,
-	// AVERAGE: 4,
-	// PHONE: 5,
-	// LETTER: 6,
-	CAMPAIGN: 7
+  ORIGINAL: 1,
+  FOCUSED: 2,
+  HEAT_MAP: 3,
+  CAMPAIGN: 7
 };
 
 var MAP_EXTRAS = {
-	PLACES: 1,
-	BLOCKS: 2
+  PLACES: 1,
+  BLOCKS: 2
 };
 
+// Función rgb para generar color hexadecimal
+function rgb(r, g, b) {
+  const decColor = 0x1000000 + (Math.round(b)) + 0x100 * (Math.round(g)) + 0x10000 * (Math.round(r));
+  return '#' + decColor.toString(16).substr(1);
+}
+
+// Defino mapTypes con funciones onClick que reciben opciones como parámetro para usarlo internamente
 var mapTypes = {};
+
+// Mapa ORIGINAL: muestra colores originales del territorio (desde KML)
 mapTypes[MAP_TYPE.ORIGINAL] = {
-	name: "Territorios",
-	legendId: "#original-legend",
-	onClick: function() {
-		showMap(options, MAP_TYPE.ORIGINAL);
-	}
+  name: "Territorios",
+  legendId: "#original-legend",
+  colorProcessor: function(territory, options) {
+    return territory.colors[MAP_TYPE.ORIGINAL] || rgb(180, 180, 180);
+  },
+  onClick: function(options) {
+    showMap(options, MAP_TYPE.ORIGINAL);
+  }
 };
 
+// Mapa FOCUSED: resalta solo el territorio seleccionado por parámetro "territorio"
 mapTypes[MAP_TYPE.FOCUSED] = {
-	name: "Asignado",
-	legendId: "#original-legend",
-	colorProcessor: function(territory, options) {
-		if (options.params.territorio !== undefined && 
-			territory.name == options.params.territorio) {
-			return territory.colors[1];
-		}
-		return rgb(180, 180, 180);
-	},
-	onClick: function() {
-		showMap(options, MAP_TYPE.ORIGINAL);
-	}
+  name: "Asignado",
+  legendId: "#original-legend",
+  colorProcessor: function(territory, options) {
+    if (options.params.territorio !== undefined && territory.name === options.params.territorio) {
+      return territory.colors[MAP_TYPE.ORIGINAL] || rgb(0, 120, 215);
+    }
+    return rgb(180, 180, 180);
+  },
+  onClick: function(options) {
+    showMap(options, MAP_TYPE.FOCUSED);
+  }
 };
 
+// Mapa HEAT_MAP: usa color según fecha, más reciente = verde-azulado, más antiguo = rojo-azulado
 mapTypes[MAP_TYPE.HEAT_MAP] = {
-	name: "Frecuencia",
-	legendId: "#heat-map-legend",
-	colorProcessor: function(territory, options) {
-		if (territory.date != "" && !territory.isComplete) {
-			//In progress
-			return rgb(255, 200, 0);
-		} else {
-			if (territory.date != "") {
-				var percentage = (territory.date.getTime() - options.minDate.getTime()) / (options.maxDate.getTime() - options.minDate.getTime());
-				percentage = percentage.toFixed(1);
-				var red = 255 * percentage;
-				var blue = 255 * (1 - percentage);
-				var colorString = rgb(red, 0, blue);
-				console.log(territory.name + ": " + (percentage * 100) + "% " + colorString);
-				return colorString;
-			}
-			return rgb(0, 0, 255);
-		}
-	},
-	onClick: function() {
-		showMap(options, MAP_TYPE.HEAT_MAP);
-	}
-};
-/*
-mapTypes[MAP_TYPE.AVERAGE] = {
-	name: "Promedio",
-	legendId: "#heat-map-legend",
-	colorProcessor: function (territory, options) {
-		var dark = rgb(255, 0, 0);
-		var minLight = 48;
-		var maxLight = 255;
-		if (territory.average != "") {
-			var percentage = (territory.average - options.minAverage) / (options.maxAverage - options.minAverage);
-			percentage = 1 - percentage.toFixed(1);
-			var tone = minLight + (maxLight - minLight) * percentage;
-			var colorString = rgb(maxLight, tone, 0);
-			// console.log(territory.name + ": " + (percentage * 100) + "% " + colorString);
-			return colorString;
-		}
-		return dark;
-	},
-	onClick: function() {
-		showMap(options, MAP_TYPE.AVERAGE);
-	}
+  name: "Frecuencia",
+  legendId: "#heat-map-legend",
+  colorProcessor: function(territory, options) {
+    if (territory.date && !territory.isComplete) {
+      return rgb(255, 200, 0);
+    } else if (territory.date) {
+      const minTime = options.minDate.getTime();
+      const maxTime = options.maxDate.getTime();
+      const currentTime = territory.date.getTime();
+      if (maxTime === minTime) {
+        return rgb(0, 255, 153);
+      }
+      let ratio = (currentTime - minTime) / (maxTime - minTime);
+      ratio = Math.min(Math.max(ratio, 0), 1);
+      const red = Math.round(255 * (1 - ratio));
+      const blue = Math.round(255 * ratio);
+      const green = 0;
+      return rgb(red, green, blue);
+    }
+    return rgb(0, 0, 255);
+  },
+  onClick: function(options) {
+    showMap(options, MAP_TYPE.HEAT_MAP);
+  }
 };
 
-mapTypes[MAP_TYPE.PHONE] = {
-	name: "Telefónica",
-	legendId: "#campaign-legend",
-	colorProcessor: function(territory, options) {
-		if (territory.phone !== undefined) {
-			return rgb(255, 255, 0);
-		} else {
-			return rgb(255, 255, 255);
-		}
-	},
-	onClick: function() {
-		showMap(options, MAP_TYPE.PHONE);
-	}
-};
-mapTypes[MAP_TYPE.LETTER] = {
-	name: "Cartas",
-	legendId: "#campaign-legend",
-	colorProcessor: function(territory, options) {
-		if (territory.letter !== undefined) {
-			return rgb(0, 255, 153);
-		}
-		return rgb(255, 255, 255);
-	},
-	onClick: function() {
-		showMap(options, MAP_TYPE.LETTER);
-	}
-};
-*/
-
+// Mapa CAMPAIGN: muestra colores según estado y accesibilidad
 mapTypes[MAP_TYPE.CAMPAIGN] = {
-	name: "Campaña",
-	legendId: "#campaign-legend",
-	colorProcessor: function(territory, options) {
-		if (territory.date != "" && !territory.isComplete) {
-			return rgb(255, 255, 0);
-		} else if (territory.inaccessible) {
-			return rgb(0, 0, 0);
-		} else {
-			if (territory.date != "") {
-				return rgb(0, 255, 153);
-			}
-			return rgb(180, 180, 180);
-		}
-	},
-	onClick: function() {
-		showMap(options, MAP_TYPE.CAMPAIGN);
-	}
+  name: "Campaña",
+  legendId: "#campaign-legend",
+  colorProcessor: function(territory, options) {
+    if (territory.date && !territory.isComplete) {
+      return rgb(255, 255, 0);
+    } else if (territory.inaccessible) {
+      return rgb(0, 0, 0);
+    } else if (territory.date) {
+      return rgb(0, 255, 153);
+    }
+    return rgb(180, 180, 180);
+  },
+  onClick: function(options) {
+    showMap(options, MAP_TYPE.CAMPAIGN);
+  }
 };
 
-
+// Estilos del mapa
 var mapStyles = [
   {
     "featureType": "administrative",
     "stylers": [{
-        "visibility": "off"
+      "visibility": "off"
     }]
   },
   {
     "featureType": "poi",
     "elementType": "labels.icon",
     "stylers": [{
-        "visibility": "off"
+      "visibility": "off"
     }]
   },
   {
     "featureType": "poi",
     "elementType": "labels.text",
     "stylers": [{
-        "visibility": "off"
+      "visibility": "off"
     }]
   },
   {
     "featureType": "transit",
     "stylers": [{
-        "visibility": "off"
+      "visibility": "off"
     }]
   }
 ];
@@ -260,25 +221,62 @@ function calculateGroupCoordinates(options, territory, placemark) {
 	options.groups[territory.group] = bounds;
 }
 
+function kmlColorToRgba(kmlColor) {
+  // kmlColor es string 8 caracteres, formato AABBGGRR
+  if (!kmlColor || kmlColor.length !== 8) return 'rgba(0,0,0,0.3)'; // fallback
+  const a = parseInt(kmlColor.substring(0, 2), 16) / 255;
+  const b = parseInt(kmlColor.substring(2, 4), 16);
+  const g = parseInt(kmlColor.substring(4, 6), 16);
+  const r = parseInt(kmlColor.substring(6, 8), 16);
+  return `rgba(${r},${g},${b},${a.toFixed(2)})`;
+}
+
+function hexToRgba(hex, alpha = 1) {
+  // Elimina #
+  hex = hex.replace(/^#/, '');
+  if (hex.length !== 6) {
+    //console.warn('Formato hex inválido:', hex);
+    return `rgba(0,0,0,${alpha})`; // fallback
+  }
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 function processPolygon(index, placemark, map, infoWindow, options, mapType) {
-	if (placemark.polygon) {
-		var territory = options.territories[placemark.name];
-		if (territory !== undefined) {
-			territory.description = placemark.description;
-			if (mapType == MAP_TYPE.ORIGINAL) {
-				territory.colors[mapType] = placemark.polygon.fillColor;
-				calculateGroupCoordinates(options, territory, placemark);
-			} else {
-				territory.colors[mapType] = mapTypes[mapType].colorProcessor(territory, options);
-			}
-			placemark.polygon.strokeColor = territory.colors[mapType];
-			placemark.polygon.fillColor = territory.colors[mapType];
-			addTerritoryInfoWindow(infoWindow, placemark, options.territories, map);
-		} else {
-			placemark.polygon.strokeColor = rgb(180, 180, 180);
-			placemark.polygon.fillColor = rgb(180, 180, 180);
-		}
-	}
+  if (placemark.polygon) {
+    var territory = options.territories[placemark.name];
+    if (territory !== undefined) {
+      territory.description = placemark.description;
+
+      if (mapType == MAP_TYPE.ORIGINAL) {
+        const fillColorRgba = kmlColorToRgba(placemark.polygon.fillColor);
+        const strokeColorRgba = kmlColorToRgba(placemark.polygon.strokeColor || placemark.polygon.fillColor);
+        
+        // Guardar color convertido
+        territory.colors[mapType] = fillColorRgba;
+
+        calculateGroupCoordinates(options, territory, placemark);
+
+        placemark.polygon.setOptions({
+          strokeColor: strokeColorRgba,
+          strokeOpacity: 1,
+          fillColor: fillColorRgba,
+          fillOpacity: parseFloat(fillColorRgba.match(/rgba\(.*?,.*?,.*?,(.*?)\)/)?.[1]) || 0.5
+        });
+      } else {
+        placemark.polygon.setOptions({
+          strokeColor: 'rgb(180, 180, 180)',
+          strokeOpacity: 1.0,
+          fillColor: 'rgb(180, 180, 180)',
+          fillOpacity: 1.0
+        });
+      }
+
+      addTerritoryInfoWindow(infoWindow, placemark, options.territories, map);
+    }
+  }
 }
 
 function findTerritory(geoXmlDoc, territory) {
@@ -310,8 +308,8 @@ function processTerritories(doc, map, infoWindow, options, mapType) {
     var geoXmlDoc = doc[0];
 	if (!options.alreadyRun) {
 		addTerritoryLabels(geoXmlDoc, map, options);
-		console.log("maxDate = " + options.maxDate);
-		console.log("minDate = " + options.minDate);
+		//console.log("maxDate = " + options.maxDate);
+		//console.log("minDate = " + options.minDate);
 		// console.log("maxAverage = " + options.maxAverage + "; minAverage = " + options.minAverage);
 	}
 	options.docs[mapType] = geoXmlDoc;
@@ -328,13 +326,15 @@ function processTerritories(doc, map, infoWindow, options, mapType) {
 }
 
 function fetchTerritoriesKmz(map, infoWindow, options, mapType) {
+  //console.log("fetchTerritoriesKMZ")
 	var geoXmlLayer = new geoXML3.parser({
         map: map,
         singleInfoWindow: true,
 		suppressInfoWindows: true,
         afterParse: function afterParse(doc) {
-            processTerritories(doc, map, infoWindow, options, mapType);
-			$("#show-location").show();
+          //console.log("KML parsed", doc);
+          processTerritories(doc, map, infoWindow, options, mapType);
+          $("#show-location").show();
         }
     });
     geoXmlLayer.parse('territories.kml');
@@ -352,22 +352,82 @@ function createPlaceContent(placemark) {
 }
 
 function createMarker(map, options, placemark, doc, infoWindow, contentProcessor) {
-	placemark.style.icon.scaledSize = new google.maps.Size(24, 24);
-	
-	var marker = new google.maps.Marker({
-	    map: map,
-	    title: placemark.name,
-	    position: placemark.Point.coordinates[0],
-		icon: placemark.style.icon
-	});
-	
-	if (contentProcessor != null) {
-		addInfoWindow(map, marker, infoWindow, placemark.Point.coordinates[0], placemark.name, contentProcessor(placemark));
-	}
-	
-	options.extrasMarkers.push(marker);
-    return marker;
+  const icon = placemark.style?.icon;
+  let iconHref = icon?.href;
+
+  // 🔧 Corrige ruta del icono si es relativa
+  if (iconHref && !iconHref.startsWith('http')) {
+    if (options.basePathForExtras) {
+      iconHref = options.basePathForExtras + '/' + iconHref;
+    }
+  }
+
+  // Obtener posición correctamente como LatLng
+  let position = null;
+  const coords = placemark.Point.coordinates[0];
+  if (coords instanceof google.maps.LatLng) {
+    position = coords;
+  } else if (Array.isArray(coords)) {
+    // coords = [lng, lat, alt] en KML/geoXML3
+    position = new google.maps.LatLng(coords[1], coords[0]);
+  } else if (coords && typeof coords.lat === 'number' && typeof coords.lng === 'number') {
+    position = new google.maps.LatLng(coords.lat, coords.lng);
+  } else {
+    //console.warn('Formato inesperado de coordenadas:', coords);
+    // fallback a (0,0) para evitar error
+    position = new google.maps.LatLng(0, 0);
+  }
+
+  const marker = new google.maps.Marker({
+    map: map,
+    title: placemark.name,
+    position: position,
+    icon: iconHref
+      ? {
+          url: iconHref,
+          scaledSize: new google.maps.Size(24, 24),
+          anchor: icon.hotSpot
+            ? new google.maps.Point(icon.hotSpot.x, icon.hotSpot.y)
+            : new google.maps.Point(12, 12)
+        }
+      : undefined
+  });
+
+  if (contentProcessor != null) {
+    addInfoWindow(map, marker, infoWindow, position, placemark.name, contentProcessor(placemark));
+  }
+
+  const label = new MapLabel({
+    text: placemark.name,
+    position: position,
+    map: map,
+    fontSize: 11,
+    fontColor: "#333",
+    align: 'right',
+    minZoom: 16
+  });
+
+  options.extrasMarkers.push(marker);
+  options.extrasBlocks.push(label);
+
+  return marker;
 }
+
+function createMarkerLugares(map, options, placemark, doc, infoWindow, contentProcessor) {
+  options.basePathForExtras = 'lugares/images';
+  return createMarker(map, options, placemark, doc, infoWindow, contentProcessor);
+}
+
+function createMarkerWithBasePath(basePath) {
+  return function(map, options, placemark, doc, infoWindow, contentProcessor) {
+    const originalBasePath = options.basePathForExtras;
+    options.basePathForExtras = basePath;
+    const marker = createMarker(map, options, placemark, doc, infoWindow, contentProcessor);
+    options.basePathForExtras = originalBasePath;
+    return marker;
+  }
+}
+
 
 function addBlockLabel(map, options, placemark) {
 	var coordinates = placemark.Point.coordinates[0];
@@ -390,6 +450,7 @@ function processBlocks(map, options, doc) {
 }
 
 function fetchExtraKmz(url, map, infoWindow, options, extraType, contentProcessor, afterParse, createMarker) {
+  //console.log("Fetch Extra Kmz ", url)
 	var geoXmlLayer = new geoXML3.parser({
         map: map,
         singleInfoWindow: true,
@@ -419,55 +480,87 @@ function parseDate(dateString) {
 	return dateString;
 }
 
-function makeSheetCall(sheetId) {
-	var url = "https://sheets.googleapis.com/v4/spreadsheets/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/values/" + sheetId + "?key=AIzaSyDeLzgtsrTNxNrXFe7H-RxBwg8CY30X4Lk";
-	return $.ajax({ 
-	  dataType: "json",
-	  url: url,
-	  async: true,
-	  success: function(result) {}                     
-	});
+function makeSheetCall(sheetName) {
+  var url = `https://docs.google.com/spreadsheets/d/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
+  return new Promise(function(resolve, reject) {
+    $.ajax({
+      url: url,
+      dataType: "text",
+      success: function(responseText) {
+        try {
+          var jsonMatch = responseText.match(/google\.visualization\.Query\.setResponse\((.*)\)/s);
+          if (!jsonMatch || jsonMatch.length < 2) {
+            reject(new Error("Formato de respuesta inesperado"));
+            return;
+          }
+          var jsonStr = jsonMatch[1];
+          var data = JSON.parse(jsonStr);
+          //console.log(`[makeSheetCall] Datos parseados para sheet "${sheetName}":`, data);
+          resolve(data);
+        } catch (error) {
+          //console.error("[makeSheetCall] Error al parsear respuesta:", error);
+          reject(error);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        //console.error("[makeSheetCall] Error en la petición AJAX:", textStatus, errorThrown);
+        reject(errorThrown || textStatus);
+      }
+    });
+  });
+}
+
+function parseDate(dateStr) {
+  if (!dateStr) return null;
+
+  // dateStr esperado: "Date(2025,3,26)"
+  var match = dateStr.match(/^Date\((\d+),(\d+),(\d+)\)$/);
+  if (!match) return null;
+
+  var year = parseInt(match[1], 10);
+  var month = parseInt(match[2], 10); // ojo, JS usa meses base 0, pero aquí ya viene así?
+  var day = parseInt(match[3], 10);
+
+  // En JS, los meses van de 0 a 11, pero el dato parece ya en base 0? (abril es 3)
+  // En la fecha 2025,3,26 el mes 3 es abril (mes 4 en humano), entonces NO restamos 1
+  // Por lo tanto:
+  return new Date(year, month, day);
 }
 
 function fetchSheetData(map, options, infoWindow) {
-	var sheets = {
-		territoriesId: "territorios"
-	}
-	var calls = [];
-	$.each(sheets, function(index, sheet) {
-		calls.push(makeSheetCall(sheet));
-	})
+  makeSheetCall("territorios")
+    .then(function(data) {
+      //console.log("[fetchSheetData] data:", data);
 
-	$.when(calls[0])
-		.done(function(territoriesResponse) {
-			$.each(territoriesResponse.values, function(i, val) {
-				options.territories[val[0]] = {
-					name: val[0],
-					date: parseDate(val[2]),
-					dateStr: val[2],
-					isComplete: val[3] == "TRUE",
-					blocks: val[4],
-					notes: val[5],
-					link: val[6],
-					link2: val[129],
-					colors: {}
-				};
-			});
-		
-		fetchExtraKmz(
-			'lugares/doc.kml', map, infoWindow, options, MAP_EXTRAS.PLACES, createPlaceContent, null, createMarker
-		);
-		
-		fetchExtraKmz(
-			'manzanas/doc.kml', map, infoWindow, options, MAP_EXTRAS.BLOCKS, null, processBlocks, null
-		);
-		
-		$.each(MAP_TYPE, function(index, mapType){
-			fetchTerritoriesKmz(map, infoWindow, options, mapType);
-		});
-		
-	});
-	
+      if (!data.table || !data.table.rows) {
+        //console.error("[fetchSheetData] Formato inesperado en datos");
+        return;
+      }
+
+      data.table.rows.forEach(function(row) {
+        var c = row.c;
+
+        options.territories[c[0]?.v] = {
+          name: c[0]?.v,
+          date: parseDate(c[2]?.v),
+          dateStr: c[2]?.v || "",
+          isComplete: c[3]?.v === true || c[3]?.v === "TRUE",
+          blocks: c[4]?.v,
+          notes: c[5]?.v,
+          link: c[6]?.v,
+          link2: c[129]?.v || "",
+          colors: {}
+        };
+      });
+
+      //console.log("[fetchSheetData] Territories cargados:", options.territories);
+
+      showLegend(options.mapShown);
+    })
+    .catch(function(error) {
+      //console.error("[fetchSheetData] Error al cargar datos:", error);
+    });
 }
 
 function showLegend(mapType) {
@@ -477,10 +570,22 @@ function showLegend(mapType) {
 }
 
 function showMap(options, mapType) {
-	options.layers[options.mapShown].hideDocument(options.docs[options.mapShown]);
-	options.layers[options.mapShown].showDocument(options.docs[mapType]);
-	options.mapShown = mapType;
-	showLegend(mapType);
+  // Ocultar la capa actual solo si existe
+  if (options.layers[options.mapShown]) {
+    if (options.docs[options.mapShown]) {
+      options.layers[options.mapShown].hideDocument(options.docs[options.mapShown]);
+    }
+  }
+
+  // Mostrar la nueva capa solo si existe
+  if (options.layers[mapType]) {
+    if (options.docs[mapType]) {
+      options.layers[mapType].showDocument(options.docs[mapType]);
+    }
+  }
+
+  options.mapShown = mapType;
+  showLegend(mapType);
 }
 
 function addShowExtrasToggle(map, options, infoWindow) {
@@ -583,10 +688,10 @@ function addShowLocation(map, options) {
 			            errorMessage = "Unknown."
 			            break;
 			    }
-				console.log("Location error: " + errorMessage);
+				//console.log("Location error: " + errorMessage);
 			});
 		} else {
-			console.log("Location error: unsupported.");
+			//console.log("Location error: unsupported.");
 		}
 	});
 }
@@ -640,72 +745,99 @@ function fixOverlays() {
 	}, 300);
 }
 
-jQuery(document).ready(function () {
-	
-	var options = {
-		alreadyRun: false,
-		mapShown: MAP_TYPE.ORIGINAL,
-		layers : {},
-		docs: {},
-		extraLayers: {},
-		extraDocs: {},
-		territories: [],
-		groups: [],
-		minDate: new Date(),
-		maxDate: new Date(2010, 1, 1), 
-		minAverage: 999,
-		maxAverage: -1,
-		extrasShown: true,
-		legendShown: false,
-		allShown: true,
-		extrasMarkers: [],
-		extrasBlocks: [],
-		params: {}
-	};
+function initMap() {
+  //console.log("initMap ejecutado");
 
-    var map = new google.maps.Map($("#map-canvas")[0], {
-		styles: mapStyles,
-		mapTypeControlOptions: {
-			style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-			mapTypeIds: ['roadmap', 'hybrid']
-		}
-    });
-	
-	map.controls[google.maps.ControlPosition.LEFT_TOP].push($("#legend-box")[0]);
-	$.each($(".map-control"), function(index, control) {
-	    map.controls[google.maps.ControlPosition.TOP_LEFT].push(control);
-		$(control).css("z-index", 1);
-	});	
-	map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($("#show-location").hide()[0]);
-	
-	var infoWindow = new google.maps.InfoWindow();
-	loadMapType(options);
-	fetchSheetData(map, options, infoWindow);
-	showLegend(options.mapShown);
-	
-	google.maps.event.addListener(map, "click", function (e) {
-		infoWindow.close();
-		$(".combo-options").hide();
-	});
+  var options = {
+    alreadyRun: false,
+    mapShown: MAP_TYPE.ORIGINAL,
+    layers : {},
+    docs: {},
+    extraLayers: {},
+    extraDocs: {},
+    territories: {},
+    groups: {},
+    minDate: new Date(),
+    maxDate: new Date(2010, 1, 1), 
+    minAverage: 999,
+    maxAverage: -1,
+    extrasShown: true,
+    legendShown: false,
+    allShown: true,
+    extrasMarkers: [],
+    extrasBlocks: [],
+    params: {}
+  };
 
-	addMapTypeOptions(options);
-	addShowExtrasToggle(map, options, infoWindow);
-	addShowLegendToggle(map, options);
-	addShowAllToggle(map, options);
-	addShowLocation(map, options);
-	
-	fixOverlays();
-	turnOnGrayscale();
-	google.maps.event.addListener(map, 'maptypeid_changed', function() { 
-		turnOnGrayscale();
-	});
-	google.maps.event.addListener(map, 'zoom_changed', function() { 
-		turnOnGrayscale();
-	});
-	
-	$("#original-legend .legend-row").click(function() {
-		var group = $(this).find(".legend-title").text().split(" ")[1];
-		var bounds = options.groups[group];
-		map.fitBounds(bounds);
-	});
-});
+  var map = new google.maps.Map(document.getElementById("map-canvas"), {
+    center: { lat: -34.9, lng: -56.2 },
+    zoom: 12,
+    styles: mapStyles,
+    mapTypeControlOptions: {
+      style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+      mapTypeIds: ['roadmap', 'hybrid']
+    }
+  });
+
+  // Colocar controles y leyendas en el mapa
+  map.controls[google.maps.ControlPosition.LEFT_TOP].push($("#legend-box")[0]);
+  $.each($(".map-control"), function(index, control) {
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(control);
+    $(control).css("z-index", 1);
+  });
+  map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($("#show-location").hide()[0]);
+
+  var infoWindow = new google.maps.InfoWindow();
+
+  // Procesar parámetros URL para filtro o selección de mapa
+  loadMapType(options);
+
+  // Cargar datos desde Google Sheets y guardar en options.territories
+  fetchSheetData(map, options, infoWindow);
+
+  // Mostrar la leyenda para el mapa seleccionado inicialmente
+  showLegend(options.mapShown);
+
+  // Cargar y mostrar el KML con territorios
+  options.mapShown = MAP_TYPE.ORIGINAL;
+
+  fetchTerritoriesKmz(map, infoWindow, options, options.mapShown);
+
+  fetchExtraKmz("lugares/doc.kml", map, infoWindow, options, MAP_EXTRAS.PLACES, createPlaceContent, null, createMarkerWithBasePath("lugares/"));
+  fetchExtraKmz("manzanas/doc.kml", map, infoWindow, options, MAP_EXTRAS.BLOCKS, null, null, createMarker);
+
+
+
+  // Cerrar infoWindow al click en mapa y ocultar combos
+  google.maps.event.addListener(map, "click", function () {
+    infoWindow.close();
+    $(".combo-options").hide();
+  });
+
+  // Agregar controles y botones
+  addMapTypeOptions(options);
+  addShowExtrasToggle(map, options, infoWindow);
+  addShowLegendToggle(map, options);
+  addShowAllToggle(map, options);
+  addShowLocation(map, options);
+
+  // Ajustes visuales para capas y filtros
+  fixOverlays();
+  turnOnGrayscale();
+
+  google.maps.event.addListener(map, 'maptypeid_changed', function () {
+    turnOnGrayscale();
+  });
+  google.maps.event.addListener(map, 'zoom_changed', function () {
+    turnOnGrayscale();
+  });
+
+  // Zoom a grupo al hacer click en la leyenda
+  $("#original-legend .legend-row").click(function () {
+    var group = $(this).find(".legend-title").text().split(" ")[1];
+    var bounds = options.groups[group];
+    if(bounds) {
+      map.fitBounds(bounds);
+    }
+  });
+}
