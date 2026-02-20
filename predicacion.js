@@ -58,7 +58,8 @@ function addDoNotCalls(territoriesData, territory, link, doNotCallField) {
     return hasDoNotCalls;
 }
 
-function fillAssignments(item, assignments, territoriesData) {
+// NUEVA VERSIÓN: fillAssignments recibe isZoom para decidir el link
+function fillAssignments(item, assignments, territoriesData, isZoom) {
     var assignmentsField = item.find(".assignments");
     var doNotCallField = item.find(".do-not-call");
 
@@ -69,10 +70,21 @@ function fillAssignments(item, assignments, territoriesData) {
         assignments.forEach(function (territory) {
             var driveLink = findTerritoryDrive(territoriesData, territory);
 
+            var finalLink = null;
+            
+            // Lógica inteligente de redirección
+            if (isZoom) {
+                // Si es Zoom, usamos el link de Drive (Teléfonos)
+                finalLink = driveLink;
+            } else {
+                // Si es presencial, mandamos al mapa interno
+                finalLink = "territorios/mapa.html?territorio=" + territory;
+            }
+
             var linkEl = null;
-            if (driveLink) {
+            if (finalLink) {
                 linkEl = $("<a>")
-                    .attr("href", driveLink)
+                    .attr("href", finalLink)
                     .attr("target", "_blank")
                     .text(territory)
                     .appendTo(element);
@@ -140,11 +152,9 @@ function findTerritoryDrive(data, territory) {
     for (var i in data.table.rows) {
         var row = data.table.rows[i].c;
         if (row[0] && row[0].v == territory) {
-            console.log("Encontrado territorio:", territory, "Link:", row[6] ? row[6].v : '');
             return row[6] ? row[6].v : '';
         }
     }
-    console.warn("No se encontró territorio:", territory);
     return '';
 }
 
@@ -162,15 +172,9 @@ function parseGoogleDate(dateString) {
 }
 
 function processData(groupsData, placesData, territoriesData) {
-    console.log("[processData] Iniciando procesamiento...");
-
     var template = $("#table .event").first();
-    if (!template.length) {
-        console.warn("[processData] No se encontró plantilla .event");
-        return;
-    }
+    if (!template.length) return;
 
-    var phoneLink = "https://wa.me/598";
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -178,11 +182,10 @@ function processData(groupsData, placesData, territoriesData) {
 
     for (var i = 0; i < groupsData.table.rows.length; i++) {
         var entry = groupsData.table.rows[i].c;
-		var rawDate = entry[0]?.v || entry[0]?.f || null;
-		var date = typeof rawDate === "string" && rawDate.startsWith("Date(")
-		? parseGoogleDate(rawDate)
-		: new Date(rawDate);
-        console.log(`[processData] Row ${i} - date:`, date);
+        var rawDate = entry[0]?.v || entry[0]?.f || null;
+        var date = typeof rawDate === "string" && rawDate.startsWith("Date(")
+        ? parseGoogleDate(rawDate)
+        : new Date(rawDate);
 
         if (!date || date < today) continue;
 
@@ -194,25 +197,20 @@ function processData(groupsData, placesData, territoriesData) {
             hour: entry[2]?.f || entry[2]?.v || "",
             conductor: entry[4]?.v || "",
             auxiliar: entry[5]?.v || "",
-            conductorPhone: entry[7]?.v?.replace(/\D/g, '') || "",
-            auxiliarPhone: entry[8]?.v?.replace(/\D/g, '') || "",
             place: entry[3]?.v || "",
             notes: entry[6]?.v || "",
             assignments: findAssignment(entry[9]?.v || "")
         });
     }
 
-    console.log("[processData] formattedGroupsData:", formattedGroupsData);
-
     for (var day in formattedGroupsData) {
-        console.log(`[processData] Mostrando día: ${day}`);
-		var parts = day.split("-");
-		var date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        var parts = day.split("-");
+        var date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
         var item = template.clone();
         item.show();
 
-		item.find(".day .number .value").text(date.getDate());
-		item.find(".day .date .value").text(date.toLocaleString('es', { weekday: 'long' }).replace(/^./, s => s.toUpperCase()));
+        item.find(".day .number .value").text(date.getDate());
+        item.find(".day .date .value").text(date.toLocaleString('es', { weekday: 'long' }).replace(/^./, s => s.toUpperCase()));
 
         var times = formattedGroupsData[day];
         var templateRow = item.find(".row").clone();
@@ -224,12 +222,15 @@ function processData(groupsData, placesData, territoriesData) {
             row.find(".time .value").text(time.hour);
             var placeField = row.find(".place .value");
             placeField.empty();
-            if (/ID:\s?(\d{3,})/i.test(time.place)) {
+
+            // Detectamos si es Zoom
+            var isZoom = /ID:\s?(\d{3,})/i.test(time.place);
+
+            if (isZoom) {
                 const match = time.place.match(/ID:\s?([\d\s]+)/i);
                 const rawID = match[1].replace(/\s+/g, "");
                 const zoomURL = `https://zoom.us/j/${rawID}`;
 
-                // Link para el ID de Zoom
                 placeField.append(
                     $("<a>")
                         .attr("href", zoomURL)
@@ -237,7 +238,6 @@ function processData(groupsData, placesData, territoriesData) {
                         .text(match[0])
                 );
 
-                // Resto del texto (ej. contraseña)
                 const rest = time.place.replace(match[0], "").trim();
                 if (rest.length > 0) {
                     placeField.append(" " + rest);
@@ -245,11 +245,13 @@ function processData(groupsData, placesData, territoriesData) {
             } else {
                 placeField.text(time.place);
             }
+            
             row.find(".cond .value").text(time.conductor);
             row.find(".aux .value").text(time.auxiliar);
             row.find(".notes .value").text(time.notes);
 
-            fillAssignments(row, time.assignments, territoriesData);
+            // Pasamos isZoom a la función de asignaciones
+            fillAssignments(row, time.assignments, territoriesData, isZoom);
             item.find(".rows").append(row);
         });
 
@@ -257,13 +259,9 @@ function processData(groupsData, placesData, territoriesData) {
     }
 
     $(".lds-dual-ring").slideUp();
-    console.log("[processData] Fin del procesamiento.");
 }
 
-
 function groups() {
-    console.log("[groups] Iniciando carga...");
-
     var groupsUrl = 'https://docs.google.com/spreadsheets/d/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/gviz/tq?tqx=out:json&sheet=json';
     var placesUrl = 'https://docs.google.com/spreadsheets/d/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/gviz/tq?tqx=out:json&sheet=lugares_json';
     var territoriesUrl = 'https://docs.google.com/spreadsheets/d/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/gviz/tq?tqx=out:json&sheet=territorios';
@@ -276,28 +274,22 @@ function groups() {
 
     $.when(groupsRequest, placesRequest, territoriesRequest)
         .done(function (groupsRes, placesRes, territoriesRes) {
-            console.log("[groups] Datos descargados correctamente");
-
             try {
                 var groupsData = JSON.parse(groupsRes[0].substring(groupsRes[0].indexOf('(') + 1, groupsRes[0].lastIndexOf(')')));
                 var placesData = JSON.parse(placesRes[0].substring(placesRes[0].indexOf('(') + 1, placesRes[0].lastIndexOf(')')));
                 var territoriesData = JSON.parse(territoriesRes[0].substring(territoriesRes[0].indexOf('(') + 1, territoriesRes[0].lastIndexOf(')')));
                 
-                console.log("[groups] groupsData:", groupsData);
-                console.log("[groups] placesData:", placesData);
-                console.log("[groups] territoriesData:", territoriesData);
-
-                $("#table").find(".event").not(":first").remove(); // limpiar
-                $(".lds-dual-ring").hide(); // ocultar spinner
+                $("#table").find(".event").not(":first").remove();
+                $(".lds-dual-ring").hide();
 
                 processData(groupsData, placesData, territoriesData);
             } catch (e) {
-                console.error("[groups] Error al parsear JSON:", e);
+                console.error("Error:", e);
                 $(".lds-dual-ring").hide();
             }
         })
         .fail(function () {
             $(".lds-dual-ring").hide();
-            alert("Error al cargar uno o más archivos de datos.");
+            alert("Error al cargar los datos.");
         });
 }
