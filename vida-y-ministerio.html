@@ -1,19 +1,1208 @@
 <!DOCTYPE html>
-<html>
-   <head>
-      <title>Reunión Vida y Ministerio</title>
-      <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-      <style>
-        iframe {
-            display: block;       /* iframes are inline by default */
-            border: none;         /* Reset default border */
-            height: 100vh;        /* Viewport-relative units */
-            width: 100vw;
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reuniones - Punta Gorda : Vida y Ministerio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f6f4ef;
+      --paper:#ffffff;
+      --paper-2:#fbfaf7;
+      --text:#171717;
+      --muted:#6f6f6f;
+      --line:rgba(0,0,0,.10);
+
+      --jw-beige:#efe0a1;
+      --jw-black:#111111;
+      --jw-gray:#4b4b4b;
+      --jw-gold:#c89b00;
+      --jw-red:#b30000;
+      --jw-wine:#8c1d40;
+
+      --shadow-card:0 6px 16px rgba(0,0,0,.04);
+      --radius-xl:18px;
+      --radius-lg:14px;
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:"Noto Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    html, body{
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+        linear-gradient(180deg, rgba(239,224,161,.22), transparent 150px),
+        linear-gradient(180deg, #fbfaf6, var(--bg));
+      color:var(--text);
+      padding:1rem;
+      display:flex;
+      justify-content:center;
+    }
+
+    .page{
+      width:100%;
+      max-width:1000px;
+      margin:0 auto;
+    }
+
+    header{
+      text-align:center;
+      margin-bottom:1rem;
+      padding-top:.25rem;
+    }
+
+    header h1{
+      font-size:clamp(1.8rem, 4.8vw, 2.4rem);
+      line-height:1.12;
+      font-weight:800;
+      letter-spacing:-.02em;
+      color:#111;
+      margin-bottom:.2rem;
+    }
+
+    .subhead{
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.7rem;
+      align-items:end;
+      justify-content:space-between;
+      margin-bottom:.75rem;
+      width:100%;
+    }
+
+    .controls-left,
+    .controls-right{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.55rem;
+      align-items:center;
+      max-width:100%;
+    }
+
+    .select-wrapper{
+      width:100%;
+      max-width:260px;
+    }
+
+    .select-label{
+      font-size:.74rem;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:var(--jw-gray);
+      margin-bottom:.34rem;
+      font-weight:800;
+    }
+
+    select{
+      width:100%;
+      border-radius:999px;
+      padding:.56rem .95rem;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      color:var(--text);
+      font-size:.92rem;
+      outline:none;
+      appearance:auto;
+    }
+
+    .toggle-btn{
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      color:var(--muted);
+      font-size:.78rem;
+      padding:.38rem .9rem;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:.35rem;
+      transition:.16s ease;
+      font-weight:700;
+    }
+
+    .toggle-btn.active{
+      border-color:rgba(75,75,75,.32);
+      color:#111;
+      background:#f5f5f5;
+    }
+
+    .toggle-dot{
+      width:7px;
+      height:7px;
+      border-radius:999px;
+      background:rgba(107,107,107,.7);
+    }
+
+    .toggle-btn.active .toggle-dot{
+      background:var(--jw-gold);
+      box-shadow:0 0 8px rgba(200,155,0,.35);
+    }
+
+    .view-tabs{
+      display:inline-flex;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      overflow:hidden;
+      max-width:100%;
+    }
+
+    .view-tab{
+      padding:.4rem .9rem;
+      font-size:.79rem;
+      color:var(--muted);
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      white-space:nowrap;
+      font-weight:700;
+    }
+
+    .view-tab.active{
+      background:var(--jw-gray);
+      color:#fff;
+    }
+
+    .shell{
+      background:linear-gradient(180deg, #fffefb, #ffffff);
+      border-radius:var(--radius-xl);
+      border:1px solid var(--line);
+      position:relative;
+      overflow:hidden;
+      width:100%;
+    }
+
+    .shell::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:18px;
+      background:linear-gradient(90deg, var(--jw-beige), #cdbb79 45%, var(--jw-black));
+    }
+
+    .shell-inner{
+      position:relative;
+      z-index:1;
+      padding:1.1rem 1rem 1rem;
+      margin-top:.35rem;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:.75rem;
+      margin-bottom:.8rem;
+      padding-top:.1rem;
+      flex-wrap:wrap;
+    }
+
+    .section-head h2{
+      font-size:.98rem;
+      text-transform:uppercase;
+      letter-spacing:.2em;
+      color:var(--jw-gray);
+      font-weight:800;
+    }
+
+    .section-head span{
+      font-size:.86rem;
+      color:var(--jw-gray);
+      padding:.26rem .92rem;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      font-weight:700;
+    }
+
+    .view-message{
+      font-size:.86rem;
+      color:var(--muted);
+      margin-bottom:.5rem;
+      padding-left:.1rem;
+    }
+
+    .weeks{
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      gap:.95rem;
+      max-height:calc(100vh - 220px);
+      overflow-y:auto;
+      overflow-x:hidden;
+      padding-right:.15rem;
+      width:100%;
+    }
+
+    .week-card{
+      background:linear-gradient(180deg, #ffffff, #fcfcfa);
+      border-radius:var(--radius-lg);
+      border:1px solid var(--line);
+      overflow:hidden;
+      box-shadow:var(--shadow-card);
+      width:100%;
+    }
+
+    .week-card.destacada{
+      border-color:rgba(200,155,0,.38);
+      background:linear-gradient(180deg, #fffef8, #ffffff);
+      box-shadow:
+        0 0 0 1px rgba(200,155,0,.10),
+        0 10px 24px rgba(0,0,0,.05);
+      position:relative;
+    }
+
+    .week-card.destacada::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:4px;
+      background:linear-gradient(90deg, var(--jw-gold), var(--jw-beige));
+      z-index:2;
+    }
+
+    .week-title{
+      background:linear-gradient(180deg, #efe4b5 0%, var(--jw-beige) 100%);
+      color:#000;
+      font-weight:800;
+      font-size:clamp(1.24rem, 3.5vw, 1.95rem);
+      line-height:1.14;
+      padding:14px 16px;
+      word-break:break-word;
+      box-shadow:inset 0 -1px 0 rgba(0,0,0,.04);
+    }
+
+    .week-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.42rem;
+      padding:10px 16px 4px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:.38rem;
+      padding:.28rem .82rem;
+      border-radius:999px;
+      background:#f7f7f7;
+      border:1px solid rgba(0,0,0,.10);
+      font-size:.76rem;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .badge-dot{
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:var(--jw-gray);
+    }
+
+    .badge-hoy{
+      border-color:rgba(34,197,94,.30);
+      color:#166534;
+      background:rgba(34,197,94,.10);
+    }
+
+    .badge-hoy .badge-dot{
+      background:#22c55e;
+      box-shadow:0 0 8px rgba(34,197,94,.3);
+    }
+
+    .meeting-link{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:var(--jw-wine);
+      text-decoration:underline;
+      font-size:clamp(.96rem, 2vw, 1.08rem);
+      padding:10px 16px 8px;
+      word-break:break-word;
+      cursor:pointer;
+    }
+
+    .meeting-link::before{
+      content:"◉";
+      color:var(--jw-wine);
+      font-size:.9em;
+      flex:none;
+    }
+
+    .intro-wrap,
+    .section-body{
+      padding:4px 0 10px;
+    }
+
+    .block{
+      margin-top:8px;
+      border-top:1px solid #f0f0f0;
+    }
+
+    .block-title{
+      position:relative;
+      color:#fff;
+      font-weight:800;
+      text-transform:uppercase;
+      font-size:clamp(1.05rem, 3vw, 1.45rem);
+      line-height:1.12;
+      padding:11px 16px;
+      word-break:break-word;
+      letter-spacing:.01em;
+      box-shadow:inset 0 -1px 0 rgba(255,255,255,.08);
+    }
+
+    .block-title::after{
+      content:"";
+      position:absolute;
+      right:16px;
+      top:50%;
+      transform:translateY(-50%);
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      background:rgba(255,255,255,.16);
+      box-shadow:0 0 0 4px rgba(255,255,255,.07);
+    }
+
+    .block-title.gray{ background:linear-gradient(180deg, #585858, var(--jw-gray)); }
+    .block-title.gold{ background:linear-gradient(180deg, #d4a600, var(--jw-gold)); }
+    .block-title.red{ background:linear-gradient(180deg, #c50000, var(--jw-red)); }
+
+    .program-row{
+      display:grid;
+      grid-template-columns:minmax(0, 1.35fr) minmax(150px, .8fr);
+      gap:10px;
+      padding:10px 16px;
+      align-items:start;
+      border-bottom:1px solid rgba(0,0,0,.03);
+      width:100%;
+    }
+
+    .left-col{
+      min-width:0;
+      font-size:clamp(.96rem, 2vw, 1.08rem);
+      line-height:1.42;
+      font-weight:700;
+      word-break:break-word;
+    }
+
+    .right-col{
+      min-width:0;
+      padding:7px 8px 7px 10px;
+      border-left:3px solid #d6d6d6;
+      background:linear-gradient(180deg, #fcfcfc, #fafafa);
+      border-radius:0 10px 10px 0;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      align-self:start;
+      box-shadow:0 6px 18px rgba(0,0,0,.04);
+      width:100%;
+    }
+
+    .assign-group{
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+      margin:0;
+      padding:0;
+    }
+
+    .assign-group.compact{ gap:0; }
+
+    .assign-line{
+      line-height:1.08;
+      word-break:break-word;
+      margin:0;
+      padding:2px 0;
+    }
+
+    .assign-group.compact .assign-line + .assign-line{
+      border-top:1px solid #e5e5e5;
+      margin-top:5px;
+      padding-top:7px;
+    }
+
+    .assign-role{
+      display:block;
+      font-size:.66rem;
+      line-height:1.02;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:#777;
+      font-weight:800;
+      margin-bottom:2px;
+    }
+
+    .assign-name{
+      display:block;
+      font-size:clamp(.84rem, 2.9vw, .94rem);
+      color:#222;
+      font-weight:500;
+      line-height:1.1;
+    }
+
+    .simple-line{
+      padding:10px 16px;
+      font-size:clamp(.96rem, 2vw, 1.06rem);
+      line-height:1.44;
+      font-weight:700;
+      word-break:break-word;
+      border-bottom:1px solid rgba(0,0,0,.03);
+    }
+
+    .load-more-wrap{
+      display:flex;
+      justify-content:center;
+      padding:10px 0 0;
+    }
+
+    .load-more{
+      border:none;
+      background:#111;
+      color:#fff;
+      border-radius:999px;
+      padding:12px 18px;
+      font-size:1rem;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 10px 20px rgba(0,0,0,.08);
+      transition:.18s ease;
+    }
+
+    .empty-msg{
+      font-size:.95rem;
+      color:var(--muted);
+      padding-top:.5rem;
+    }
+
+    body.modo-texto-grande .week-title{ font-size:clamp(1.34rem, 4vw, 2.08rem); }
+    body.modo-texto-grande .left-col{ font-size:clamp(1rem, 2.2vw, 1.14rem); }
+    body.modo-texto-grande .assign-name{ font-size:clamp(.9rem, 3.1vw, .98rem); }
+    body.modo-texto-grande .assign-role{ font-size:.72rem; }
+
+    @media (max-width: 900px){
+      body{
+        padding:.9rem .65rem 1rem;
+      }
+    }
+
+    @media (max-width: 640px){
+      body{
+        padding:.75rem .35rem 1rem;
+      }
+
+      header h1{
+        font-size:1.55rem;
+        line-height:1.16;
+      }
+
+      .shell-inner{
+        padding:1rem .8rem .9rem;
+      }
+
+      .weeks{
+        max-height:none;
+        overflow-y:visible;
+      }
+
+      .controls{
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .controls-right{
+        justify-content:flex-start;
+      }
+
+      .section-head{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .program-row{
+        grid-template-columns:minmax(0, 1.22fr) minmax(128px, .78fr);
+        gap:8px;
+        padding:10px 12px;
+      }
+
+      .week-title,
+      .meeting-link,
+      .block-title,
+      .simple-line{
+        padding-left:12px;
+        padding-right:12px;
+      }
+
+      .right-col{
+        padding-left:8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>Vida y Ministerio</h1>
+      <div class="subhead">Programa semanal de la congregación</div>
+    </header>
+
+    <section class="controls">
+      <div class="controls-left">
+        <div class="select-wrapper">
+          <div class="select-label">Mes / año</div>
+          <select id="monthYearSelect"></select>
+        </div>
+      </div>
+
+      <div class="controls-right">
+        <div class="view-tabs" aria-label="Ver">
+          <button class="view-tab active" data-view="mes" id="tab-mes">Mes</button>
+          <button class="view-tab" data-view="semana" id="tab-semana">Semana</button>
+          <button class="view-tab" data-view="hoy" id="tab-hoy">Hoy</button>
+        </div>
+
+        <button class="toggle-btn" id="btn-texto-grande"><span class="toggle-dot"></span>Letra grande</button>
+        <button class="toggle-btn" id="btn-alto-contraste"><span class="toggle-dot"></span>Más contraste</button>
+      </div>
+    </section>
+
+    <section class="shell">
+      <div class="shell-inner">
+        <div class="section-head">
+          <h2>Programa de reuniones</h2>
+          <span id="count-resumen">Cargando…</span>
+        </div>
+
+        <p id="view-message" class="view-message"></p>
+
+        <div id="weeks" class="weeks"></div>
+
+        <div class="load-more-wrap">
+          <button id="loadMoreBtn" class="load-more" style="display:none;">Ver más semanas</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const SHEET_ID = "184BIXu7VDAOyGTGEj1RvjyNE6MH05tmV_XLzQThUaoo";
+    const GID = "334102173";
+    const INITIAL_WEEKS = 3;
+    const DIRECT_ZOOM_LINK = "https://us02web.zoom.us/j/87811088916?pwd=L1FTWDdQa203M2RHQi9iZjJBb1NnUT09";
+
+    const weeksEl = document.getElementById("weeks");
+    const countResumenEl = document.getElementById("count-resumen");
+    const viewMessageEl = document.getElementById("view-message");
+    const monthYearSelect = document.getElementById("monthYearSelect");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+
+    let allWeeks = [];
+    let filteredWeeks = [];
+    let visibleWeeks = INITIAL_WEEKS;
+    let mesAnioActual = null;
+    let modoVista = "mes";
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function cleanText(value) {
+      if (value == null) return "";
+      return String(value).replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+    }
+
+    function getCell(row, index) {
+      return row?.c?.[index]?.v != null ? cleanText(row.c[index].v) : "";
+    }
+
+    function splitLinesRaw(value) {
+      if (!value) return [];
+      return String(value).split(/\n+/).map(cleanText).filter(Boolean);
+    }
+
+    function normalizarTexto(str) {
+      return (str || "")
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function soloFecha(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    function esHoyDate(fecha) {
+      const hoy = soloFecha(new Date());
+      const f = soloFecha(fecha);
+      return f.getTime() === hoy.getTime();
+    }
+
+    function obtenerMesAnioKey(date) {
+      const meses = [
+        "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+        "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+      ];
+      return {
+        label: meses[date.getMonth()] + " " + date.getFullYear(),
+        month: date.getMonth(),
+        year: date.getFullYear(),
+      };
+    }
+
+    function mismoMesAnio(date, year, month) {
+      return date && date.getFullYear() === year && date.getMonth() === month;
+    }
+
+    function parseFechaFromTitle(text) {
+      const limpio = normalizarTexto(text);
+      const match = limpio.match(/(lunes|martes|miercoles|jueves|viernes|sabado|domingo)\s+(\d{1,2})\s+de\s+([a-z]+)(?:\s+de\s+(\d{4}))?/i);
+      if (!match) return null;
+
+      const day = parseInt(match[2], 10);
+      const monthName = match[3];
+      const year = match[4] ? parseInt(match[4], 10) : new Date().getFullYear();
+
+      const meses = {
+        enero:0, febrero:1, marzo:2, abril:3, mayo:4, junio:5,
+        julio:6, agosto:7, septiembre:8, setiembre:8, octubre:9,
+        noviembre:10, diciembre:11
+      };
+
+      const month = meses[monthName];
+      if (month == null) return null;
+
+      return new Date(year, month, day);
+    }
+
+    function isWeekTitle(text) {
+      return /^(lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo)\s/i.test(text);
+    }
+
+    function isMeetingId(text) {
+      return /^ID de reunión:/i.test(text);
+    }
+
+    function detectSection(text) {
+      const t = text.toUpperCase();
+      if (t.includes("TESOROS DE LA BIBLIA")) return { label: text, color: "gray" };
+      if (t.includes("SEAMOS MEJORES MAESTROS")) return { label: text, color: "gold" };
+      if (t.includes("NUESTRA VIDA CRISTIANA")) return { label: text, color: "red" };
+      return null;
+    }
+
+    function parseSingleRoleLine(text) {
+      if (!text) return null;
+      const match = text.match(/^(Presidente|Oración|Oracion|Conductor|Estudiante|Ayudante|Lector)\s*:?\s*(.+)$/i);
+      if (!match) return null;
+
+      return {
+        role: cleanText(match[1]).replace(/:$/, ""),
+        name: cleanText(match[2])
+      };
+    }
+
+    function splitRightLines(colB, colC) {
+      const leftLines = splitLinesRaw(colB);
+      const rightLines = splitLinesRaw(colC);
+      const max = Math.max(leftLines.length, rightLines.length);
+      const result = [];
+
+      for (let i = 0; i < max; i++) {
+        const a = leftLines[i] || "";
+        const b = rightLines[i] || "";
+
+        if (!a && !b) continue;
+
+        if (a && b) {
+          result.push({ role: a.replace(/:$/, ""), name: b });
+        } else if (a) {
+          const parsed = parseSingleRoleLine(a);
+          if (parsed) result.push(parsed);
+          else result.push({ role: "", name: a });
+        } else {
+          const parsed = parseSingleRoleLine(b);
+          if (parsed) result.push(parsed);
+          else result.push({ role: "", name: b });
         }
-      </style>
-   </head>
-   <body style="margin: 0px;">
-      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRmOX8-R_atSHpAXuTouDR0TvfI_N4bMsdrYvVnFWeFli0rWpfR5PpwmakytmuxokcCRhpFjn6HWm3w/pubhtml?gid=334102173&single=true" />
-   </body>
+      }
+
+      return result;
+    }
+
+    function buildItem(colA, colB, colC) {
+      return {
+        left: colA,
+        rightLines: splitRightLines(colB, colC)
+      };
+    }
+
+    function getLastItem(targetList) {
+      if (!targetList || !targetList.length) return null;
+      return targetList[targetList.length - 1];
+    }
+
+    function pushAssignmentToPrevious(currentWeek, currentSection, parsedLine) {
+      const targetList = currentSection ? currentSection.items : currentWeek.intro;
+      const lastItem = getLastItem(targetList);
+
+      if (lastItem) {
+        lastItem.rightLines = lastItem.rightLines || [];
+        lastItem.rightLines.push(parsedLine);
+        return true;
+      }
+      return false;
+    }
+
+    function parseWeeks(rows) {
+      const weeks = [];
+      let currentWeek = null;
+      let currentSection = null;
+
+      for (const row of rows) {
+        const colA = getCell(row, 0);
+        const colB = getCell(row, 1);
+        const colC = getCell(row, 2);
+
+        if (!colA && !colB && !colC) continue;
+
+        if (isWeekTitle(colA)) {
+          if (currentWeek) weeks.push(currentWeek);
+
+          const fecha = parseFechaFromTitle(colA);
+
+          currentWeek = {
+            title: colA,
+            fecha,
+            meetingId: "",
+            intro: [],
+            sections: []
+          };
+
+          currentSection = null;
+          continue;
+        }
+
+        if (!currentWeek) continue;
+
+        if (isMeetingId(colA)) {
+          currentWeek.meetingId = colA;
+          continue;
+        }
+
+        const section = detectSection(colA);
+        if (section) {
+          currentSection = {
+            title: section.label,
+            color: section.color,
+            items: []
+          };
+          currentWeek.sections.push(currentSection);
+          continue;
+        }
+
+        const roleOnlyA = parseSingleRoleLine(colA);
+        const rowHasOnlyRoleInA = !!roleOnlyA && !colB && !colC;
+
+        if (rowHasOnlyRoleInA) {
+          if (pushAssignmentToPrevious(currentWeek, currentSection, roleOnlyA)) continue;
+        }
+
+        const rowHasOnlyRightSide = !colA && (colB || colC);
+        if (rowHasOnlyRightSide) {
+          const extraLines = splitRightLines(colB, colC);
+          const targetList = currentSection ? currentSection.items : currentWeek.intro;
+          const lastItem = getLastItem(targetList);
+
+          if (lastItem && extraLines.length) {
+            lastItem.rightLines = (lastItem.rightLines || []).concat(extraLines);
+            continue;
+          }
+        }
+
+        const item = buildItem(colA, colB, colC);
+
+        if (!item.left && item.rightLines.length) {
+          const targetList = currentSection ? currentSection.items : currentWeek.intro;
+          const lastItem = getLastItem(targetList);
+          if (lastItem) {
+            lastItem.rightLines = (lastItem.rightLines || []).concat(item.rightLines);
+            continue;
+          }
+        }
+
+        if (currentSection) currentSection.items.push(item);
+        else currentWeek.intro.push(item);
+      }
+
+      if (currentWeek) weeks.push(currentWeek);
+      return weeks.filter(w => w.fecha instanceof Date && !isNaN(w.fecha));
+    }
+
+    function isSeamosItem(text) {
+      const t = (text || "").toUpperCase();
+      return t.includes("EMPIECE CONVERSACIONES")
+        || t.includes("HAGA REVISITAS")
+        || t.includes("ESCENIFICACIÓN")
+        || t.includes("ESCENIFICACION")
+        || t.includes("PREDICACIÓN INFORMAL")
+        || t.includes("PREDICACION INFORMAL")
+        || t.includes("DE CASA EN CASA");
+    }
+
+    function isEstudioCongregacion(text) {
+      const t = (text || "").toUpperCase();
+      return t.includes("ESTUDIO BÍBLICO DE LA CONGREGACIÓN")
+        || t.includes("ESTUDIO BIBLICO DE LA CONGREGACION");
+    }
+
+    function isIntroSongPrayer(text) {
+      const t = (text || "").toUpperCase();
+      return t.includes("CANCIÓN") || t.includes("CANCION");
+    }
+
+    function groupAssignments(item) {
+      const lines = item.rightLines || [];
+      if (!lines.length) return [];
+      const left = item.left || "";
+      const groups = [];
+
+      if (isSeamosItem(left)) {
+        const estudiante = lines.find(x => (x.role || "").toUpperCase().includes("ESTUDIANTE"));
+        const ayudante = lines.find(x => (x.role || "").toUpperCase().includes("AYUDANTE"));
+        const rest = lines.filter(x => x !== estudiante && x !== ayudante);
+
+        if (estudiante || ayudante) groups.push({ compact: true, lines: [estudiante, ayudante].filter(Boolean) });
+        rest.forEach(x => groups.push({ compact: false, lines: [x] }));
+        return groups;
+      }
+
+      if (isEstudioCongregacion(left)) {
+        const conductor = lines.find(x => (x.role || "").toUpperCase().includes("CONDUCTOR"));
+        const lector = lines.find(x => (x.role || "").toUpperCase().includes("LECTOR"));
+        const rest = lines.filter(x => x !== conductor && x !== lector);
+
+        if (conductor || lector) groups.push({ compact: true, lines: [conductor, lector].filter(Boolean) });
+        rest.forEach(x => groups.push({ compact: false, lines: [x] }));
+        return groups;
+      }
+
+      if (isIntroSongPrayer(left)) {
+        const presidente = lines.find(x => (x.role || "").toUpperCase().includes("PRESIDENTE"));
+        const oracion = lines.find(x => {
+          const r = (x.role || "").toUpperCase();
+          return r.includes("ORACIÓN") || r.includes("ORACION");
+        });
+        const rest = lines.filter(x => x !== presidente && x !== oracion);
+
+        if (presidente || oracion) groups.push({ compact: true, lines: [presidente, oracion].filter(Boolean) });
+        rest.forEach(x => groups.push({ compact: false, lines: [x] }));
+        return groups;
+      }
+
+      return lines.map(x => ({ compact: false, lines: [x] }));
+    }
+
+    function renderRightCol(item) {
+      const groups = groupAssignments(item);
+      if (!groups.length) return "";
+
+      return `
+        <div class="right-col">
+          ${groups.map(group => `
+            <div class="assign-group ${group.compact ? "compact" : ""}">
+              ${group.lines.map(line => `
+                <div class="assign-line">
+                  ${line.role ? `<span class="assign-role">${escapeHtml(line.role)}</span>` : ""}
+                  <span class="assign-name">${escapeHtml(line.name)}</span>
+                </div>
+              `).join("")}
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderItem(item) {
+      const hasRight = item.rightLines && item.rightLines.length > 0;
+      if (!hasRight) {
+        return `<div class="simple-line">${escapeHtml(item.left)}</div>`;
+      }
+
+      return `
+        <div class="program-row">
+          <div class="left-col">${escapeHtml(item.left)}</div>
+          ${renderRightCol(item)}
+        </div>
+      `;
+    }
+
+    function renderMeetingLink(meetingText) {
+      return `
+        <a
+          href="${DIRECT_ZOOM_LINK}"
+          class="meeting-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ${escapeHtml(meetingText)}
+        </a>
+      `;
+    }
+
+    function renderWeek(week, isFeatured = false) {
+      const esHoy = esHoyDate(week.fecha);
+
+      return `
+        <article class="week-card ${isFeatured ? "destacada" : ""}">
+          <div class="week-title">${escapeHtml(week.title)}</div>
+
+          <div class="week-meta">
+            <div class="badge">
+              <span class="badge-dot"></span>
+              <span>${isFeatured ? "Siguiente reunión" : "Programa"}</span>
+            </div>
+            ${esHoy ? `
+              <div class="badge badge-hoy">
+                <span class="badge-dot"></span>
+                <span>Hoy</span>
+              </div>
+            ` : ""}
+          </div>
+
+          ${week.meetingId ? renderMeetingLink(week.meetingId) : ""}
+
+          <div class="intro-wrap">
+            ${week.intro.map(renderItem).join("")}
+          </div>
+
+          ${week.sections.map(section => `
+            <section class="block">
+              <div class="block-title ${section.color}">${escapeHtml(section.title)}</div>
+              <div class="section-body">
+                ${section.items.map(renderItem).join("")}
+              </div>
+            </section>
+          `).join("")}
+        </article>
+      `;
+    }
+
+    function actualizarOpcionesMes() {
+      const opcionesMesSet = new Map();
+
+      allWeeks.forEach(week => {
+        const keyObj = obtenerMesAnioKey(week.fecha);
+        const key = keyObj.year + "-" + keyObj.month;
+        if (!opcionesMesSet.has(key)) opcionesMesSet.set(key, keyObj.label);
+      });
+
+      const opcionesOrdenadas = Array.from(opcionesMesSet.entries())
+        .map(([key, label]) => {
+          const [yearStr, monthStr] = key.split("-");
+          return { key, label, year: +yearStr, month: +monthStr };
+        })
+        .sort((a, b) => (a.year - b.year) || (a.month - b.month));
+
+      monthYearSelect.innerHTML = "";
+
+      const optProxima = document.createElement("option");
+      optProxima.value = "__PROXIMA__";
+      optProxima.textContent = "✅ Siguiente reunión";
+      monthYearSelect.appendChild(optProxima);
+
+      opcionesOrdenadas.forEach(opt => {
+        const option = document.createElement("option");
+        option.value = opt.key;
+        option.textContent = opt.label;
+        monthYearSelect.appendChild(option);
+      });
+    }
+
+    function setMesAProximaReunion() {
+      const hoy = soloFecha(new Date());
+      const proxima = allWeeks.find(w => w.fecha.getTime() >= hoy.getTime()) || allWeeks[0];
+      if (!proxima) return false;
+
+      const keyObj = obtenerMesAnioKey(proxima.fecha);
+      mesAnioActual = { year: keyObj.year, month: keyObj.month };
+      monthYearSelect.value = `${keyObj.year}-${keyObj.month}`;
+      return true;
+    }
+
+    function filtrarSemanas() {
+      const hoy = soloFecha(new Date());
+
+      let lista = allWeeks.filter(
+        week => mismoMesAnio(week.fecha, mesAnioActual.year, mesAnioActual.month) &&
+        week.fecha.getTime() >= hoy.getTime()
+      );
+
+      if (!lista.length) {
+        const futuras = allWeeks.filter(week => week.fecha.getTime() >= hoy.getTime());
+        if (futuras.length) {
+          const first = futuras[0];
+          const keyObj = obtenerMesAnioKey(first.fecha);
+          mesAnioActual = { year: keyObj.year, month: keyObj.month };
+          monthYearSelect.value = `${keyObj.year}-${keyObj.month}`;
+
+          lista = allWeeks.filter(
+            week => mismoMesAnio(week.fecha, mesAnioActual.year, mesAnioActual.month) &&
+            week.fecha.getTime() >= hoy.getTime()
+          );
+        }
+      }
+
+      if (modoVista === "hoy") {
+        const hoyLista = lista.filter(week => esHoyDate(week.fecha));
+        if (hoyLista.length) {
+          lista = hoyLista;
+          viewMessageEl.textContent = "Mostrando el programa de hoy.";
+        } else if (lista.length) {
+          lista = [lista[0]];
+          viewMessageEl.textContent = "Hoy no hay reunión. Se muestra la siguiente reunión de este mes.";
+        } else {
+          viewMessageEl.textContent = "Hoy no hay reunión programada en este mes.";
+        }
+      } else if (modoVista === "semana") {
+        const semanaFin = new Date(hoy);
+        semanaFin.setDate(hoy.getDate() + 6);
+
+        const semanaLista = lista.filter(week => week.fecha <= semanaFin);
+        if (semanaLista.length) {
+          lista = semanaLista;
+          viewMessageEl.textContent = "Programas de esta semana.";
+        } else {
+          viewMessageEl.textContent = "No hay reuniones esta semana en este mes.";
+        }
+      } else {
+        viewMessageEl.textContent = "";
+      }
+
+      filteredWeeks = lista.sort((a, b) => a.fecha - b.fecha);
+    }
+
+    function render() {
+      weeksEl.innerHTML = "";
+
+      if (!allWeeks.length) {
+        countResumenEl.textContent = "0 programas";
+        weeksEl.innerHTML = `<p class="empty-msg">No encontré semanas para mostrar.</p>`;
+        loadMoreBtn.style.display = "none";
+        return;
+      }
+
+      filtrarSemanas();
+
+      if (!filteredWeeks.length) {
+        countResumenEl.textContent = "0 programas";
+        weeksEl.innerHTML = `<p class="empty-msg">Sin programas futuros para mostrar.</p>`;
+        loadMoreBtn.style.display = "none";
+        return;
+      }
+
+      countResumenEl.textContent = filteredWeeks.length === 1
+        ? "1 programa visible"
+        : `${filteredWeeks.length} programas visibles`;
+
+      const visible = filteredWeeks.slice(0, visibleWeeks);
+
+      weeksEl.innerHTML = visible.map((week, index) => renderWeek(week, index === 0)).join("");
+      loadMoreBtn.style.display = visibleWeeks < filteredWeeks.length ? "inline-block" : "none";
+    }
+
+    async function loadSheet() {
+      countResumenEl.textContent = "Cargando…";
+      weeksEl.innerHTML = "";
+
+      try {
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
+        const response = await fetch(url, { cache: "no-store" });
+        const raw = await response.text();
+
+        const start = raw.indexOf("{");
+        const end = raw.lastIndexOf("}");
+        if (start === -1 || end === -1) throw new Error("Respuesta inválida de Google Sheets");
+
+        const json = JSON.parse(raw.slice(start, end + 1));
+        const rows = json?.table?.rows || [];
+
+        allWeeks = parseWeeks(rows).sort((a, b) => a.fecha - b.fecha);
+
+        actualizarOpcionesMes();
+        monthYearSelect.value = "__PROXIMA__";
+        setMesAProximaReunion();
+        render();
+      } catch (error) {
+        console.error(error);
+        countResumenEl.textContent = "Error";
+        weeksEl.innerHTML = `<p class="empty-msg">No pude cargar la hoja. Verificá que siga pública y que el ID/GID sean correctos.</p>`;
+      }
+    }
+
+    monthYearSelect.addEventListener("change", () => {
+      visibleWeeks = INITIAL_WEEKS;
+      if (monthYearSelect.value === "__PROXIMA__") {
+        setMesAProximaReunion();
+      } else {
+        const [yStr, mStr] = monthYearSelect.value.split("-");
+        mesAnioActual = { year: +yStr, month: +mStr };
+      }
+      render();
+    });
+
+    document.querySelectorAll(".view-tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".view-tab").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        modoVista = btn.dataset.view || "mes";
+        visibleWeeks = INITIAL_WEEKS;
+        render();
+      });
+    });
+
+    document.getElementById("btn-texto-grande").addEventListener("click", (e) => {
+      const active = document.body.classList.toggle("modo-texto-grande");
+      e.currentTarget.classList.toggle("active", active);
+    });
+
+    document.getElementById("btn-alto-contraste").addEventListener("click", (e) => {
+      const active = document.body.classList.toggle("modo-alto-contraste");
+      e.currentTarget.classList.toggle("active", active);
+    });
+
+    loadMoreBtn.addEventListener("click", () => {
+      visibleWeeks += 3;
+      render();
+    });
+
+    window.addEventListener("DOMContentLoaded", loadSheet);
+  </script>
+</body>
 </html>
