@@ -1,0 +1,395 @@
+:root{
+  --bg:#f6f4ef;
+  --paper:#ffffff;
+  --text:#171717;
+  --muted:#6f6f6f;
+  --line:rgba(0,0,0,.10);
+
+  --jw-beige:#efe0a1;
+  --jw-black:#111111;
+  --jw-gray:#4b4b4b;
+  --jw-gold:#c89b00;
+  --jw-wine:#8c1d40;
+
+  --shadow-card:0 6px 16px rgba(0,0,0,.04);
+  --radius-xl:18px;
+  --radius-lg:14px;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:"Noto Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html, body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  min-height:100vh;
+  background:
+    linear-gradient(180deg, rgba(239,224,161,.22), transparent 150px),
+    linear-gradient(180deg, #fbfaf6, var(--bg));
+  color:var(--text);
+  padding:1rem;
+  display:flex;
+  justify-content:center;
+}
+
+.page{
+  width:100%;
+  max-width:1000px;
+  margin:0 auto;
+}
+
+header{
+  text-align:center;
+  margin-bottom:1rem;
+  padding-top:.25rem;
+}
+
+header h1{
+  font-size:clamp(1.8rem, 4.8vw, 2.4rem);
+  line-height:1.12;
+  font-weight:800;
+  letter-spacing:-.02em;
+  color:#111;
+  margin-bottom:.2rem;
+}
+
+.shell{
+  background:linear-gradient(180deg, #fffefb, #ffffff);
+  border-radius:var(--radius-xl);
+  border:1px solid var(--line);
+  position:relative;
+  overflow:hidden;
+  width:100%;
+  box-shadow:var(--shadow-card);
+}
+
+.shell::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:18px;
+  background:linear-gradient(90deg, var(--jw-beige), #cdbb79 45%, var(--jw-black));
+}
+
+.shell-inner{
+  position:relative;
+  z-index:1;
+  padding:1.1rem 1rem 1rem;
+  margin-top:.35rem;
+}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  margin-bottom:.8rem;
+  padding-top:.1rem;
+  flex-wrap:wrap;
+}
+
+.section-head h2{
+  font-size:.98rem;
+  text-transform:uppercase;
+  letter-spacing:.2em;
+  color:var(--jw-gray);
+  font-weight:800;
+}
+
+/* Separación entre dos bloques de la misma hoja (ej. Responsabilidades y Tareas). */
+.section-head.sep{
+  margin-top:1.5rem;
+}
+
+.section-head span{
+  font-size:.86rem;
+  color:var(--jw-gray);
+  padding:.26rem .92rem;
+  border-radius:999px;
+  border:1px solid rgba(0,0,0,.10);
+  background:#fff;
+  font-weight:700;
+}
+
+.view-message{
+  font-size:clamp(1.05rem, 2.6vw, 1.3rem);
+  line-height:1.35;
+  font-weight:700;
+  color:var(--jw-gray);
+  margin-bottom:.6rem;
+  padding-left:.1rem;
+}
+
+.view-message .badge{
+  vertical-align:middle;
+}
+
+.weeks{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:.95rem;
+  width:100%;
+}
+
+.week-card{
+  background:linear-gradient(180deg, #ffffff, #fcfcfa);
+  border-radius:var(--radius-lg);
+  border:1px solid var(--line);
+  overflow:hidden;
+  box-shadow:var(--shadow-card);
+  width:100%;
+}
+
+.week-title{
+  background:linear-gradient(180deg, #efe4b5 0%, var(--jw-beige) 100%);
+  color:#000;
+  font-weight:800;
+  font-size:clamp(1.24rem, 3.5vw, 1.95rem);
+  line-height:1.14;
+  padding:14px 16px;
+  word-break:break-word;
+  box-shadow:inset 0 -1px 0 rgba(0,0,0,.04);
+}
+
+.week-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.42rem;
+  padding:10px 16px 4px;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:.38rem;
+  padding:.28rem .82rem;
+  border-radius:999px;
+  background:#f7f7f7;
+  border:1px solid rgba(0,0,0,.10);
+  font-size:.76rem;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.badge-dot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:var(--jw-gray);
+}
+
+.program-row{
+  display:grid;
+  grid-template-columns:minmax(0, 1.35fr) minmax(150px, .8fr);
+  gap:10px;
+  padding:10px 16px;
+  align-items:start;
+  border-bottom:1px solid rgba(0,0,0,.03);
+  width:100%;
+}
+
+.left-col{
+  min-width:0;
+  font-size:clamp(.96rem, 2vw, 1.08rem);
+  line-height:1.42;
+  font-weight:700;
+  word-break:break-word;
+}
+
+.right-col{
+  min-width:0;
+  padding:7px 8px 7px 10px;
+  border-left:3px solid #d6d6d6;
+  background:linear-gradient(180deg, #fcfcfc, #fafafa);
+  border-radius:0 10px 10px 0;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  align-self:start;
+  box-shadow:0 6px 18px rgba(0,0,0,.04);
+  width:100%;
+}
+
+.assign-group{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  margin:0;
+  padding:0;
+}
+
+.assign-group.compact{ gap:0; }
+
+.assign-line{
+  line-height:1.08;
+  word-break:break-word;
+  margin:0;
+  padding:2px 0;
+}
+
+.assign-group.compact .assign-line + .assign-line{
+  border-top:1px solid #e5e5e5;
+  margin-top:5px;
+  padding-top:7px;
+}
+
+.assign-role{
+  display:block;
+  font-size:.66rem;
+  line-height:1.02;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  color:#777;
+  font-weight:800;
+  margin-bottom:2px;
+}
+
+.assign-name{
+  display:block;
+  font-size:clamp(.84rem, 2.9vw, .94rem);
+  color:#222;
+  font-weight:500;
+  line-height:1.1;
+}
+
+.empty-msg{
+  font-size:.95rem;
+  color:var(--muted);
+  padding-top:.5rem;
+  line-height:1.5;
+}
+
+.empty-msg a{
+  color:var(--jw-wine);
+  font-weight:700;
+}
+
+/* Lista de integrantes en dos columnas (componente nuevo). */
+.member-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:2px 16px;
+  padding:12px 16px 16px;
+}
+
+.member{
+  position:relative;
+  padding-left:15px;
+  font-size:.92rem;
+  color:#222;
+  line-height:1.5;
+  word-break:break-word;
+}
+
+.member::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.58em;
+  width:6px;
+  height:6px;
+  border-radius:999px;
+  background:var(--jw-beige);
+  box-shadow:0 0 0 2px rgba(200,155,0,.16);
+}
+
+@media (max-width:560px){
+  .member-list{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width: 900px){
+  .page{
+    max-width:100%;
+  }
+}
+
+@media (max-width: 640px){
+  body{
+    padding:.75rem .35rem 1rem;
+  }
+
+  header h1{
+    font-size:1.55rem;
+    line-height:1.16;
+  }
+
+  .shell-inner{
+    padding:1rem .8rem .9rem;
+  }
+
+  .section-head{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .program-row{
+    grid-template-columns:minmax(0, 1.22fr) minmax(128px, .78fr);
+    gap:8px;
+    padding:10px 12px;
+  }
+
+  .week-title{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .right-col{
+    padding-left:8px;
+  }
+}
+
+/* Superintendente y Auxiliar de un grupo (publicadores): bloque compacto alineado a la izquierda. */
+.leaders{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:4px 20px;
+  padding:10px 16px 4px;
+  max-width:620px;
+}
+
+.leader{
+  min-width:0;
+}
+
+/* Roles de una responsabilidad/tarea: Titular / Auxiliar / Supervisor dentro de su card. */
+.resp-roles{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+  gap:6px 18px;
+  padding:12px 16px 14px;
+  min-width:0;
+}
+
+@media (min-width:760px){
+  .member-list{
+    grid-template-columns:repeat(3, minmax(0,1fr));
+  }
+}
+
+/* Responsabilidades y tareas: cards cortas (título + roles), en grilla de 2 columnas.
+   Cada card conserva su alto natural para que las tarjetas no se estiren de más. */
+.weeks.resp-grid{
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  align-items:start;
+}
+
+.weeks.resp-grid .week-title{
+  font-size:clamp(1rem, 1.9vw, 1.22rem);
+  padding:12px 14px;
+}
+
+@media (max-width:640px){
+  .weeks.resp-grid{
+    grid-template-columns:1fr;
+  }
+}

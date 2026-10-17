@@ -1,19 +1,168 @@
 <!DOCTYPE html>
-<html>
-   <head>
-      <title>Precursores regulares</title>
-      <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-      <style>
-        iframe {
-            display: block;       /* iframes are inline by default */
-            border: none;         /* Reset default border */
-            height: 100vh;        /* Viewport-relative units */
-            width: 100vw;
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Precursores regulares</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="programa.css">
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>Precursores regulares</h1>
+    </header>
+
+    <section class="shell">
+      <div class="shell-inner">
+        <div class="section-head">
+          <h2>Precursores</h2>
+          <span id="count-resumen">Cargando…</span>
+        </div>
+
+        <div id="groups" class="weeks"></div>
+      </div>
+    </section>
+  </main>
+
+  <noscript>
+    <div style="max-width:1000px;margin:1rem auto;font-size:.95rem;color:#6f6f6f;text-align:center;">
+      Necesitás JavaScript activado para ver los precursores.
+    </div>
+  </noscript>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQovGDewyfzRnsAQbWFYWe1tQsYv8GmF1ryp96A0gkEnkburswMIk8u2XR7COWv0Vi2DeYvRGmoLHAy/pub?gid=1214975784&single=true&output=csv";
+
+    const groupsEl = document.getElementById("groups");
+    const countResumenEl = document.getElementById("count-resumen");
+
+    /* --- LOGICA PURA (testeable) : inicio --- */
+
+    function cleanText(value) {
+      if (value == null) return "";
+      return String(value).replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function normalizarTexto(str) {
+      return cleanText(str)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    // CSV tipo RFC4180: soporta comillas, comas y saltos dentro de campos.
+    function parseCsv(text) {
+      const filas = [];
+      let fila = [];
+      let campo = "";
+      let enComillas = false;
+      const src = String(text).replace(/^\uFEFF/, "");
+
+      for (let i = 0; i < src.length; i++) {
+        const c = src[i];
+
+        if (enComillas) {
+          if (c === '"') {
+            if (src[i + 1] === '"') { campo += '"'; i++; }
+            else enComillas = false;
+          } else {
+            campo += c;
+          }
+          continue;
         }
-      </style>
-   </head>
-   <body style="margin: 0px;">
-      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQovGDewyfzRnsAQbWFYWe1tQsYv8GmF1ryp96A0gkEnkburswMIk8u2XR7COWv0Vi2DeYvRGmoLHAy/pubhtml?gid=1214975784&single=true" />
-   </body>
+
+        if (c === '"') enComillas = true;
+        else if (c === ",") { fila.push(campo); campo = ""; }
+        else if (c === "\n") { fila.push(campo); filas.push(fila); fila = []; campo = ""; }
+        else if (c === "\r") { /* ignorar */ }
+        else campo += c;
+      }
+
+      if (campo !== "" || fila.length) {
+        fila.push(campo);
+        filas.push(fila);
+      }
+
+      return filas;
+    }
+
+    // Solo la columna 0. Se descartan títulos, fecha y celdas de error (#REF!/#N/A).
+    function extraerPrecursores(filas) {
+      const nombres = [];
+      for (const fila of filas) {
+        const nombre = cleanText(fila[0]);
+        if (!nombre) continue;
+        if (/punta gorda/i.test(nombre)) continue;
+        if (/^a la fecha/i.test(nombre)) continue;
+        if (nombre.startsWith("#")) continue;
+        nombres.push(nombre);
+      }
+      return nombres;
+    }
+
+    /* --- LOGICA PURA : fin --- */
+
+    function renderLista(nombres) {
+      const miembros = nombres
+        .map(n => `<span class="member">${escapeHtml(n)}</span>`)
+        .join("");
+
+      return `
+        <article class="week-card">
+          <div class="member-list">${miembros}</div>
+        </article>
+      `;
+    }
+
+    function renderError(mensaje) {
+      countResumenEl.textContent = "Error";
+      groupsEl.innerHTML = `<p class="empty-msg">${escapeHtml(mensaje)}</p>`;
+    }
+
+    async function cargar() {
+      countResumenEl.textContent = "Cargando…";
+      groupsEl.innerHTML = "";
+
+      let csv;
+      try {
+        const response = await fetch(CSV_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        csv = await response.text();
+      } catch (err) {
+        // Abierto como file:// el navegador bloquea el fetch (Google no manda CORS al redirect).
+        const local = window.location.protocol === "file:";
+        renderError(local
+          ? "Para ver los precursores localmente hay que servirlo por HTTP (por ejemplo: python3 -m http.server en la carpeta del sitio)."
+          : "No pude cargar los precursores. Verificá que la planilla siga publicada.");
+        return;
+      }
+
+      const nombres = extraerPrecursores(parseCsv(csv));
+
+      if (!nombres.length) {
+        countResumenEl.textContent = "0 precursores";
+        groupsEl.innerHTML = `<p class="empty-msg">No encontré precursores en la planilla.</p>`;
+        return;
+      }
+
+      countResumenEl.textContent = nombres.length === 1 ? "1 precursor" : `${nombres.length} precursores`;
+      groupsEl.innerHTML = renderLista(nombres);
+    }
+
+    cargar();
+  </script>
+</body>
 </html>
