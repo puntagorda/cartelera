@@ -70,6 +70,14 @@
         .trim();
     }
 
+    // Tareas de la planilla que no se muestran en la página.
+    // Son las dos que hoy traen solo Supervisor (Boris Meza) sin Titular; la
+    // congregación pidió no listarlas en el bloque de Tareas.
+    // Los valores van normalizados (sin tildes y en minúsculas) y la comparación
+    // usa normalizarTexto(), así no se rompe si en la planilla el nombre viene
+    // con tilde o cambian mayúsculas.
+    const TAREAS_OCULTAS = ["predicacion por cartas", "predicacion telefonica"];
+
     // CSV tipo RFC4180: soporta comillas, comas y saltos dentro de campos.
     function parseCsv(text) {
       const filas = [];
@@ -124,6 +132,10 @@
 
         const nombre = cleanText(fila[0]);
         if (!nombre) continue;
+
+        // Solo se filtra el bloque de Tareas: las de TAREAS_OCULTAS no se pushean,
+        // así el contador (bloques.tareas.length) queda ya descontado.
+        if (destino === bloques.tareas && TAREAS_OCULTAS.includes(normalizarTexto(nombre))) continue;
 
         destino.push({
           nombre,

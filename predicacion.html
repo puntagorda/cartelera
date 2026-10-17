@@ -3,74 +3,89 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>Predicación</title>
+    <title>Grupos de predicación</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- jQuery y JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="predicacion.js" defer></script>
 
-    <!-- CSS -->
+    <!-- Tipografía del sitio -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS del sitio (el orden importa: base, spinner, predicación) -->
+    <link rel="stylesheet" href="programa.css">
     <link rel="stylesheet" href="spinner.css">
     <link rel="stylesheet" href="predicacion.css">
 </head>
 
 <body onload="groups()">
-    <div class="header">
-        <h2>Grupos de predicación</h2>
-        <a class="button"
-           href="https://docs.google.com/spreadsheets/d/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/export?exportFormat=pdf&format=pdf&portrait=true&gid=788148842&single=true"
-           target="_blank"
-           download>
-            Descargar PDF
-        </a>
-    </div>
+    <main class="page">
+        <header>
+            <h1>Grupos de predicación</h1>
+        </header>
 
-    <div class="lds-dual-ring"></div>
+        <section class="shell">
+            <div class="shell-inner">
+                <div class="toolbar">
+                    <a class="pdf-button"
+                       href="https://docs.google.com/spreadsheets/d/1uTjpzxOZ5GNIKorAhHVzerRB4zbDhBvYIVtXF9T17-s/export?exportFormat=pdf&format=pdf&portrait=true&gid=788148842&single=true"
+                       target="_blank"
+                       download>
+                        Descargar PDF
+                    </a>
+                </div>
 
-    <div id="table" class="table">
-        <!-- PLANTILLA OCULTA -->
-        <div class="event" style="display: none;">
-            <div class="day">
-                <div class="number"><span class="value">1</span></div>
-                <div class="date"><span class="value">DOM</span></div>
-            </div>
-            <div class="rows">
-                <div class="row">
-                    <div class="time">
-                        <img src="images/service/noun_time_2664301.svg">
-                        <span class="value">10:00</span>
-                    </div>
-                    <div class="place">
-                        <img src="images/service/noun_place_2478983.svg">
-                        <span class="value">Lugar</span>
-                    </div>
-                    <div class="cond">
-                        <span class="label">Conductor </span>
-                        <span class="value">Nombre</span>
-                    </div>
-                    <div class="aux">
-                        <span class="label">Auxiliar </span>
-                        <span class="value">Nombre</span>
-                    </div>
-                    <div class="notes">
-                        <span class="label">Notas </span>
-                        <span class="value">...</span>
-                    </div>
-                    <div class="assignments">
-                        <span class="label">Territorios </span>
-                        <span class="value">
-                            <a href="#" target="_blank">33</a>
-                        </span>
-                    </div>
-                    <div class="do-not-call">
-                        <span class="label">No llegar </span>
-                        <span class="value"></span>
+                <div class="lds-dual-ring"></div>
+
+                <div id="table" class="table weeks">
+                    <!-- PLANTILLA OCULTA: el JS la clona y la completa -->
+                    <div class="event" style="display: none;">
+                        <div class="day">
+                            <div class="number"><span class="value">1</span></div>
+                            <div class="date"><span class="value">DOM</span></div>
+                        </div>
+                        <div class="rows">
+                            <div class="row">
+                                <div class="time">
+                                    <img src="images/service/noun_time_2664301.svg" alt="">
+                                    <span class="value">10:00</span>
+                                </div>
+                                <div class="place">
+                                    <img src="images/service/noun_place_2478983.svg" alt="">
+                                    <span class="value">Lugar</span>
+                                </div>
+                                <div class="cond">
+                                    <span class="label">Conductor </span>
+                                    <span class="value">Nombre</span>
+                                </div>
+                                <div class="aux">
+                                    <span class="label">Auxiliar </span>
+                                    <span class="value">Nombre</span>
+                                </div>
+                                <div class="notes">
+                                    <span class="label">Notas </span>
+                                    <span class="value">...</span>
+                                </div>
+                                <div class="assignments">
+                                    <span class="label">Territorios </span>
+                                    <span class="value">
+                                        <a href="#" target="_blank">33</a>
+                                    </span>
+                                </div>
+                                <div class="do-not-call">
+                                    <span class="label">No llegar </span>
+                                    <span class="value"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 </body>
 
 </html>

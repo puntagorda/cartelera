@@ -1,223 +1,328 @@
-* {
-	border: 0;
-	margin: 0;
-	padding: 0;
-	font-family: sans-serif;
+/* Re-skin de "Grupos de predicación" con el sistema de diseño del sitio.
+   Depende de las variables de programa.css (--jw-beige, --line, etc.).
+   Nota: no se define ningún reset universal acá; ese lo aporta programa.css. */
+
+/* Toolbar con el botón de descarga centrado arriba de las tarjetas. */
+.toolbar {
+	display: flex;
+	justify-content: center;
+	margin-bottom: .95rem;
 }
 
-body { }
-
-.header {
-	background: #86d6b2;
-	text-align: center;
-	padding: 40px;
-	color: #FFFFFF;
-}
-
-.button {
-	display: block;
-	width: 150px;
-	border: 1px solid #fff;
+.pdf-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(180deg, #efe4b5 0%, var(--jw-beige) 100%);
+	color: #111;
+	font-weight: 800;
+	font-size: .9rem;
+	border: none;
+	border-radius: 999px;
+	padding: 9px 16px;
 	text-decoration: none;
-	color: #fff;
-	margin: 15px auto 0 auto;
-	padding: 12px;
+	box-shadow: var(--shadow-card);
+	transition: filter .2s, transform .2s;
 }
 
-.button:hover {
-	background: rgba(255,255,255,.3);
-	border-color: rgba(255,255,255,.3);
-	transition: all .4s;
+.pdf-button:hover {
+	filter: brightness(.96);
+	transform: translateY(-1px);
 }
 
+/* Tarjeta-evento: mantiene el formato de columna izquierda (día) + fila derecha (horarios). */
 .event {
-	width: 90%;
-	border-radius: 5px;
-	margin: 20px auto;
+	width: 100%;
+	margin: 0;
 	display: flex;
 	flex-direction: row;
-	box-shadow: 2px 2px 10px #CCCCCC;
+	background: #fff;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-card);
+	overflow: hidden;
 }
 
-.event .rows {
-	width: 74%;
-	margin-top: 10px;
-}
-
-.event .row {
-	display: flex;
-	flex-direction: column;
-	color: #424242;
-	padding: 10px;
-	margin-bottom: 10px;
-	background: #D2FBE7;
-	border-radius: 5px;
-}
-
-.event .row.highlight_1 { 
-	background: #92E8BF; 
-}
-.event .row.highlight_2 { 
-	background: #E8E0A9; 
-}
-.event .row.highlight_3 { 
-	background: #D8D2FC; 
-}
-
-.event .row .time {
-	margin-bottom: 4px;
-	font-size: 4vw;
-	display: flex;
-}
-
-.event .row .place {
-	font-size: 4vw;
-	display: flex;
-	align-items: center;
-	margin-bottom: 4px;
-}
-
-.event .row .place img { 
-	width: 20px; 
-}
-.event .row .place a { 
-	color: #424242; 
-}
-
-.event .row .place a:hover {
-	color: #424242;
-	text-decoration: underline;
-}
-
-.event .day .time img { 
-	width: 10px; 
-}
-
+/* Bloque beige del día (número + día de la semana). */
 .event .day {
-	width: 20%;
-	color: #424243;
-	font-weight: 900;
+	flex: 0 0 auto;
+	width: clamp(76px, 20%, 116px);
+	background: linear-gradient(180deg, #efe4b5 0%, var(--jw-beige) 100%);
+	color: #000;
+	font-weight: 800;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 10px;
-	border-radius: 0 5px 5px 0;
+	padding: 10px 6px;
+	border-right: 1px solid var(--line);
 }
 
-.event .day .number { 
-	font-size: 25pt; 
-}
-.event img { 
-	margin-right: 8px; 
+.event .day .number {
+	font-size: clamp(1.6rem, 5vw, 2rem);
+	font-weight: 800;
+	line-height: 1;
 }
 
-.event .time img {
+.event .day .date {
+	font-size: .72rem;
+	text-transform: uppercase;
+	letter-spacing: .08em;
+	font-weight: 800;
+	color: #5a5326;
+	margin-top: 4px;
+}
+
+/* Columna de horarios. */
+.event .rows {
+	flex: 1;
+	min-width: 0;
+	width: auto;
+	margin: 0;
+	padding: 10px 14px 12px;
+}
+
+/* Cada horario del día. */
+.event .row {
+	display: flex;
+	flex-direction: column;
+	background: #fbfaf4;
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	padding: 10px 12px;
+	margin: 0 0 10px;
+	color: var(--text);
+}
+
+.event .row:last-child {
+	margin-bottom: 0;
+}
+
+/* Horario y lugar, con iconos del sitio. */
+.event .row .time {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: clamp(1rem, 2.4vw, 1.12rem);
+	font-weight: 700;
+	margin-bottom: 4px;
+}
+
+.event .row .place {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: clamp(.95rem, 2.2vw, 1.05rem);
+	margin-bottom: 4px;
+	word-break: break-word;
+}
+
+.event .row .time img,
+.event .row .place img {
 	width: 18px;
-	margin-right: 10px;
-	vertical-align: bottom;
+	height: 18px;
+	flex: 0 0 auto;
+	opacity: .75;
 }
 
+.event .row .place a {
+	color: var(--jw-wine);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.event .row .place a:hover {
+	text-decoration: underline;
+}
+
+/* Cada línea con label + valor es una grilla de 2 columnas con el MISMO ancho
+   de label en todas, así todos los valores arrancan exactamente en la misma x.
+   Antes cada línea era un bloque suelto y "TERRITORIOS", más largo que el
+   min-width del label, corría su valor respecto de las demás líneas. */
+.event .cond,
+.event .aux,
+.event .notes,
+.event .assignments,
+.event .do-not-call {
+	display: grid;
+	grid-template-columns: 92px minmax(0, 1fr);
+	column-gap: 8px;
+	align-items: center;   /* el label queda centrado con los chips del valor */
+}
+
+/* Micro-label de la primera columna, alineado a la derecha contra el valor. */
 .event .label {
-	font-size: 11px;
-	width: 51px;
-	display: inline-block;
+	display: block;
 	text-align: right;
-	margin-right: 8px;
+	min-width: 0;
+	margin-right: 0;
+	font-size: .66rem;
+	line-height: 1.3;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	color: #777;
+	font-weight: 800;
+	overflow-wrap: normal;
 }
 
+/* Conductor y auxiliar. */
 .event .cond,
 .event .aux {
-	font-size: 14px;
-	margin-bottom: 6px;
+	font-size: clamp(.9rem, 2vw, 1rem);
+	margin-bottom: 4px;
+}
+
+.event .cond .value,
+.event .aux .value {
+	font-weight: 600;
 }
 
 .event .cond a,
-.event .aux a { 
-	color: #424242; 
+.event .aux a {
+	color: var(--jw-wine);
+	text-decoration: none;
 }
 
 .event .cond a:hover,
 .event .aux a:hover {
-	color: #424242;
 	text-decoration: underline;
 }
 
-.event .notes { 
-	font-size: 14px; 
+/* Notas. */
+.event .notes {
+	font-size: .9rem;
 }
-.event .assignments { 
-	margin-top: 8px; 
+
+.event .notes .value {
+	color: var(--muted);
 }
-.event .assignments .label,
-.event .do-not-call .label { 
-	vertical-align: top; 
+
+/* Territorios: chips cuadraditos. */
+.event .assignments {
+	margin-top: 8px;
 }
 
 .event .assignments a {
 	display: inline-block;
-	width: 18px;
-	border: 1px solid #424242;
-	text-decoration: none;
-	color: #424242;
+	min-width: 36px;
+	padding: 7px 9px;
+	border: 1px solid var(--line);
+	border-radius: 9px;
+	background: #fff;
+	color: var(--jw-wine);
+	font-weight: 800;
 	text-align: center;
-	margin-right: 10px;
-	padding: 12px;
-	transition: all .4s;
+	text-decoration: none;
+	margin-right: 8px;
+	transition: background .25s;
 	position: relative;
 	overflow: hidden;
 }
 
-.event .assignments a:hover { 
-	background: rgba(255,255,255,.3); 
+.event .assignments a:hover {
+	background: var(--jw-beige);
 }
-.event .do-not-call { 
-	margin-top: 10px; 
+
+/* Esquinita del link de territorio (doblez). */
+.arrow-right {
+	background-color: var(--jw-beige);
+	height: 20px;
+	width: 20px;
+	right: -12px;
+	top: -12px;
+	position: absolute;
+	-webkit-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+}
+
+/* Bloque "No llegar". */
+.event .do-not-call {
+	margin-top: 10px;
+	/* Su valor puede traer el desplegable "Ver más...": el label se ancla arriba
+	   en vez de centrarse contra la lista, que lo dejaría flotando al medio. */
+	align-items: start;
 }
 
 .event .do-not-call .value {
 	display: inline-block;
-	font-size: 14px;
+	font-size: .9rem;
+	color: var(--muted);
 }
 
 .event .do-not-call ul {
-	margin-left: 13px;
+	margin-left: 14px;
 	margin-bottom: 10px;
 }
 
+.event .do-not-call .dnc-list {
+	margin-left: 14px;
+	font-size: .85rem;
+}
+
+.event .do-not-call .dnc-list a {
+	color: var(--jw-wine);
+	text-decoration: none;
+}
+
+.event .do-not-call .dnc-list a:hover {
+	text-decoration: underline;
+}
+
+/* Botón secundario pill "Ver más...". */
 .event .do-not-call .see-more {
 	display: inline-block;
-	border: 1px solid #424242;
+	border: 1px solid var(--line);
+	background: #fff;
+	border-radius: 999px;
+	padding: 6px 12px;
+	margin-bottom: 8px;
+	font-size: .78rem;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	font-weight: 800;
+	color: var(--jw-gray);
 	text-decoration: none;
-	color: #424242;
-	text-align: center;
-	margin-bottom: 10px;
-	padding: 6px 0px;
-	transition: all .4s;
-	width: 96px;
+	transition: background .25s;
 }
 
-.event .dnc-list a { color: #424242; }
-
-.arrow-right {
-	background-color: #444;
-	height: 20px;
-	right: -12px;
-	position: absolute;
-	top: -12px;
-	width: 20px;
-	-webkit-transform: rotate(-45deg);
+.event .do-not-call .see-more:hover {
+	background: var(--jw-beige);
 }
 
-@media screen and (min-width:750px) {
+/* Spinner del sitio: pisamos el verde viejo de spinner.css con el dorado. */
+.lds-dual-ring:after {
+	border-color: var(--jw-gold) transparent var(--jw-gold) transparent;
+}
 
-	.event { 
-		width: 60%; 
+/* Responsive: la fecha (izquierda) se mantiene también en celular. */
+@media (max-width: 640px) {
+	.event .day {
+		width: clamp(64px, 22%, 96px);
+		padding: 10px 4px;
 	}
-	
-	.event .row .place,
-	.event .row .time { 
-		font-size: 14pt;
+
+	.event .day .date {
+		font-size: .64rem;
+		letter-spacing: .05em;
+	}
+
+	.event .rows {
+		padding: 10px 10px 10px;
+	}
+
+	/* En pantallas chicas la columna del label baja un poco y el micro-label
+	   se achica para que "TERRITORIOS" entre sin desbordar sobre el valor. */
+	.event .cond,
+	.event .aux,
+	.event .notes,
+	.event .assignments,
+	.event .do-not-call {
+		grid-template-columns: 84px minmax(0, 1fr);
+	}
+
+	.event .label {
+		font-size: .6rem;
+		letter-spacing: .03em;
 	}
 }
