@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Agasajo de Oradores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f6f4ef;
+      --paper:#ffffff;
+      --text:#171717;
+      --muted:#6f6f6f;
+      --line:rgba(0,0,0,.10);
+
+      --jw-beige:#efe0a1;
+      --jw-black:#111111;
+      --jw-gray:#4b4b4b;
+      --jw-gold:#c89b00;
+      --jw-wine:#8c1d40;
+
+      --shadow-card:0 6px 16px rgba(0,0,0,.04);
+      --radius-xl:18px;
+      --radius-lg:14px;
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:"Noto Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    html, body{
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+        linear-gradient(180deg, rgba(239,224,161,.22), transparent 150px),
+        linear-gradient(180deg, #fbfaf6, var(--bg));
+      color:var(--text);
+      padding:1rem;
+      display:flex;
+      justify-content:center;
+    }
+
+    .page{
+      width:100%;
+      max-width:1000px;
+      margin:0 auto;
+    }
+
+    header{
+      text-align:center;
+      margin-bottom:1rem;
+      padding-top:.25rem;
+    }
+
+    header h1{
+      font-size:clamp(1.8rem, 4.8vw, 2.4rem);
+      line-height:1.12;
+      font-weight:800;
+      letter-spacing:-.02em;
+      color:#111;
+      margin-bottom:.2rem;
+    }
+
+    .shell{
+      background:linear-gradient(180deg, #fffefb, #ffffff);
+      border-radius:var(--radius-xl);
+      border:1px solid var(--line);
+      position:relative;
+      overflow:hidden;
+      width:100%;
+      box-shadow:var(--shadow-card);
+    }
+
+    .shell::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:18px;
+      background:linear-gradient(90deg, var(--jw-beige), #cdbb79 45%, var(--jw-black));
+    }
+
+    .shell-inner{
+      position:relative;
+      z-index:1;
+      padding:1.1rem 1rem 1rem;
+      margin-top:.35rem;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:.75rem;
+      margin-bottom:.8rem;
+      padding-top:.1rem;
+      flex-wrap:wrap;
+    }
+
+    .section-head h2{
+      font-size:.98rem;
+      text-transform:uppercase;
+      letter-spacing:.2em;
+      color:var(--jw-gray);
+      font-weight:800;
+    }
+
+    .section-head span{
+      font-size:.86rem;
+      color:var(--jw-gray);
+      padding:.26rem .92rem;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      font-weight:700;
+    }
+
+    .view-message{
+      font-size:clamp(1.05rem, 2.6vw, 1.3rem);
+      line-height:1.35;
+      font-weight:700;
+      color:var(--jw-gray);
+      margin-bottom:.6rem;
+      padding-left:.1rem;
+    }
+
+    .view-message .badge{
+      vertical-align:middle;
+    }
+
+    .weeks{
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      gap:.95rem;
+      width:100%;
+    }
+
+    .week-card{
+      background:linear-gradient(180deg, #ffffff, #fcfcfa);
+      border-radius:var(--radius-lg);
+      border:1px solid var(--line);
+      overflow:hidden;
+      box-shadow:var(--shadow-card);
+      width:100%;
+    }
+
+    .week-card.destacada{
+      border-color:rgba(200,155,0,.38);
+      background:linear-gradient(180deg, #fffef8, #ffffff);
+      box-shadow:
+        0 0 0 1px rgba(200,155,0,.10),
+        0 10px 24px rgba(0,0,0,.05);
+      position:relative;
+    }
+
+    .week-card.destacada::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto 0;
+      height:4px;
+      background:linear-gradient(90deg, var(--jw-gold), var(--jw-beige));
+      z-index:2;
+    }
+
+    .week-title{
+      background:linear-gradient(180deg, #efe4b5 0%, var(--jw-beige) 100%);
+      color:#000;
+      font-weight:800;
+      font-size:clamp(1.24rem, 3.5vw, 1.95rem);
+      line-height:1.14;
+      padding:14px 16px;
+      word-break:break-word;
+      box-shadow:inset 0 -1px 0 rgba(0,0,0,.04);
+    }
+
+    .week-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.42rem;
+      padding:10px 16px 4px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:.38rem;
+      padding:.28rem .82rem;
+      border-radius:999px;
+      background:#f7f7f7;
+      border:1px solid rgba(0,0,0,.10);
+      font-size:.76rem;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .badge-dot{
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:var(--jw-gray);
+    }
+
+    .badge-hoy{
+      border-color:rgba(34,197,94,.30);
+      color:#166534;
+      background:rgba(34,197,94,.10);
+    }
+
+    .badge-hoy .badge-dot{
+      background:#22c55e;
+      box-shadow:0 0 8px rgba(34,197,94,.3);
+    }
+
+    .program-row{
+      display:grid;
+      grid-template-columns:minmax(0, 1.35fr) minmax(150px, .8fr);
+      gap:10px;
+      padding:10px 16px;
+      align-items:start;
+      border-bottom:1px solid rgba(0,0,0,.03);
+      width:100%;
+    }
+
+    .left-col{
+      min-width:0;
+      font-size:clamp(.96rem, 2vw, 1.08rem);
+      line-height:1.42;
+      font-weight:700;
+      word-break:break-word;
+    }
+
+    .right-col{
+      min-width:0;
+      padding:7px 8px 7px 10px;
+      border-left:3px solid #d6d6d6;
+      background:linear-gradient(180deg, #fcfcfc, #fafafa);
+      border-radius:0 10px 10px 0;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      align-self:start;
+      box-shadow:0 6px 18px rgba(0,0,0,.04);
+      width:100%;
+    }
+
+    .assign-group{
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+      margin:0;
+      padding:0;
+    }
+
+    .assign-group.compact{ gap:0; }
+
+    .assign-line{
+      line-height:1.08;
+      word-break:break-word;
+      margin:0;
+      padding:2px 0;
+    }
+
+    .assign-group.compact .assign-line + .assign-line{
+      border-top:1px solid #e5e5e5;
+      margin-top:5px;
+      padding-top:7px;
+    }
+
+    .assign-role{
+      display:block;
+      font-size:.66rem;
+      line-height:1.02;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:#777;
+      font-weight:800;
+      margin-bottom:2px;
+    }
+
+    .assign-name{
+      display:block;
+      font-size:clamp(.84rem, 2.9vw, .94rem);
+      color:#222;
+      font-weight:500;
+      line-height:1.1;
+    }
+
+    .empty-msg{
+      font-size:.95rem;
+      color:var(--muted);
+      padding-top:.5rem;
+      line-height:1.5;
+    }
+
+    .empty-msg a{
+      color:var(--jw-wine);
+      font-weight:700;
+    }
+
+    @media (max-width: 900px){
+      .page{
+        max-width:100%;
+      }
+    }
+
+    @media (max-width: 640px){
+      body{
+        padding:.75rem .35rem 1rem;
+      }
+
+      header h1{
+        font-size:1.55rem;
+        line-height:1.16;
+      }
+
+      .shell-inner{
+        padding:1rem .8rem .9rem;
+      }
+
+      .section-head{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .program-row{
+        grid-template-columns:minmax(0, 1.22fr) minmax(128px, .78fr);
+        gap:8px;
+        padding:10px 12px;
+      }
+
+      .week-title{
+        padding-left:12px;
+        padding-right:12px;
+      }
+
+      .right-col{
+        padding-left:8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>Agasajo de Oradores</h1>
+    </header>
+
+    <section class="shell">
+      <div class="shell-inner">
+        <div class="section-head">
+          <h2>Grupos y semanas</h2>
+          <span id="count-resumen">Cargando…</span>
+        </div>
+
+        <p id="view-message" class="view-message"></p>
+
+        <div id="groups" class="weeks"></div>
+      </div>
+    </section>
+  </main>
+
+  <noscript>
+    <div style="max-width:1000px;margin:1rem auto;font-size:.95rem;color:#6f6f6f;text-align:center;">
+      Necesitás JavaScript activado para ver el programa.
+    </div>
+  </noscript>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWCa-itRAVXV2xs9QLccTu3qjWqIktBxIhxL7tsrTZQNodoMicxkyHajgt7eswF-DPV22hKx7O5ob8/pub?gid=98511176&single=true&output=csv";
+    const ETIQUETA_AGASAJO = "Agasajo al orador y familia luego de la reunión del Domingo";
+
+    const groupsEl = document.getElementById("groups");
+    const countResumenEl = document.getElementById("count-resumen");
+    const viewMessageEl = document.getElementById("view-message");
+
+    /* --- LOGICA PURA (testeable) : inicio --- */
+
+    const MES_ABREV = {
+      ENE:0, FEB:1, MAR:2, ABR:3, MAY:4, JUN:5,
+      JUL:6, AGO:7, SEP:8, SET:8, OCT:9, NOV:10, DIC:11
+    };
+
+    function cleanText(value) {
+      if (value == null) return "";
+      return String(value).replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function normalizarTexto(str) {
+      return cleanText(str)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function soloFecha(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    // CSV tipo RFC4180: soporta comillas, comas y saltos dentro de campos.
+    function parseCsv(text) {
+      const filas = [];
+      let fila = [];
+      let campo = "";
+      let enComillas = false;
+      const src = String(text).replace(/^\uFEFF/, "");
+
+      for (let i = 0; i < src.length; i++) {
+        const c = src[i];
+
+        if (enComillas) {
+          if (c === '"') {
+            if (src[i + 1] === '"') { campo += '"'; i++; }
+            else enComillas = false;
+          } else {
+            campo += c;
+          }
+          continue;
+        }
+
+        if (c === '"') enComillas = true;
+        else if (c === ",") { fila.push(campo); campo = ""; }
+        else if (c === "\n") { fila.push(campo); filas.push(fila); fila = []; campo = ""; }
+        else if (c === "\r") { /* ignorar */ }
+        else campo += c;
+      }
+
+      if (campo !== "" || fila.length) {
+        fila.push(campo);
+        filas.push(fila);
+      }
+
+      return filas;
+    }
+
+    // Busca la fila de cabecera y mapea las columnas por nombre.
+    function extraerGrupos(filas) {
+      const idx = filas.findIndex(f => f.some(c => normalizarTexto(c) === "grupo"));
+      if (idx < 0) return [];
+
+      const header = filas[idx].map(c => normalizarTexto(c));
+      const col = nombre => header.indexOf(nombre);
+
+      const iGrupo = col("grupo");
+      const iSuper = col("superintendente");
+      const iAux = col("auxiliar");
+      const iSemana = col("semana");
+
+      return filas
+        .slice(idx + 1)
+        .map(f => ({
+          grupo: iGrupo >= 0 ? cleanText(f[iGrupo]) : "",
+          superintendente: iSuper >= 0 ? cleanText(f[iSuper]) : "",
+          auxiliar: iAux >= 0 ? cleanText(f[iAux]) : "",
+          semana: iSemana >= 0 ? cleanText(f[iSemana]) : ""
+        }))
+        .filter(g => g.grupo || g.semana);
+    }
+
+    // "12 - 18 OCT", "19 - 25 OCT.", "26 OCT - 01 NOV." -> {start, end, label}
+    function parseSemana(label, ref) {
+      const raw = cleanText(label);
+      if (!raw) return null;
+
+      const limpio = raw.toUpperCase().replace(/\./g, " ").replace(/\s+/g, " ").trim();
+      let d1, m1, d2, m2, m;
+
+      if ((m = limpio.match(/^(\d{1,2})\s*-\s*(\d{1,2})\s+([A-Z]{3,4})$/))) {
+        d1 = +m[1]; d2 = +m[2]; m1 = m2 = MES_ABREV[m[3]];
+      } else if ((m = limpio.match(/^(\d{1,2})\s+([A-Z]{3,4})\s*-\s*(\d{1,2})\s+([A-Z]{3,4})$/))) {
+        d1 = +m[1]; m1 = MES_ABREV[m[2]]; d2 = +m[3]; m2 = MES_ABREV[m[4]];
+      } else {
+        return null;
+      }
+
+      if (m1 == null || m2 == null || !d1 || !d2) return null;
+
+      // El año no viene en la hoja: se elige el que deja la semana más cerca de hoy.
+      let mejor = null;
+      for (const anio of [ref.getFullYear() - 1, ref.getFullYear(), ref.getFullYear() + 1]) {
+        const anioFin = m2 < m1 ? anio + 1 : anio;
+        const start = new Date(anio, m1, d1);
+        const end = new Date(anioFin, m2, d2);
+        if (end < start) continue;
+
+        const medio = (start.getTime() + end.getTime()) / 2;
+        const dist = Math.abs(medio - ref.getTime());
+        if (!mejor || dist < mejor.dist) mejor = { start, end, dist };
+      }
+
+      if (!mejor) return null;
+      return { start: mejor.start, end: mejor.end, label: raw.replace(/\.+\s*$/, "") };
+    }
+
+    // Ordena por fecha de inicio y marca la semana que contiene la fecha de referencia.
+    function prepararGrupos(items, hoy) {
+      const ref = soloFecha(hoy);
+      return items
+        .map(g => ({ ...g, rango: parseSemana(g.semana, ref) }))
+        .sort((a, b) => {
+          if (!a.rango && !b.rango) return 0;
+          if (!a.rango) return 1;
+          if (!b.rango) return -1;
+          return a.rango.start - b.rango.start;
+        })
+        .map(g => ({
+          ...g,
+          actual: !!g.rango && ref >= g.rango.start && ref <= g.rango.end
+        }));
+    }
+
+    /* --- LOGICA PURA : fin --- */
+
+    function renderResponsables(g) {
+      const lineas = [];
+      if (g.superintendente) lineas.push({ role: "Superintendente", name: g.superintendente });
+      if (g.auxiliar) lineas.push({ role: "Auxiliar", name: g.auxiliar });
+
+      if (!lineas.length) {
+        return `<div class="right-col"></div>`;
+      }
+
+      return `
+        <div class="right-col">
+          <div class="assign-group compact">
+            ${lineas.map(l => `
+              <div class="assign-line">
+                <span class="assign-role">${escapeHtml(l.role)}</span>
+                <span class="assign-name">${escapeHtml(l.name)}</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderGrupo(g) {
+      const titulo = g.rango ? g.rango.label : (g.semana || "Semana sin asignar");
+
+      return `
+        <article class="week-card${g.actual ? " destacada" : ""}">
+          <div class="week-title">${escapeHtml(titulo)}</div>
+
+          <div class="week-meta">
+            <div class="badge">
+              <span class="badge-dot"></span>
+              <span>Grupo ${escapeHtml(g.grupo)}</span>
+            </div>
+            ${g.actual ? `
+              <div class="badge badge-hoy">
+                <span class="badge-dot"></span>
+                <span>Esta semana</span>
+              </div>
+            ` : ""}
+          </div>
+
+          <div class="program-row">
+            <div class="left-col">${escapeHtml(ETIQUETA_AGASAJO)}</div>
+            ${renderResponsables(g)}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderError(mensaje) {
+      countResumenEl.textContent = "Error";
+      viewMessageEl.textContent = "";
+      groupsEl.innerHTML = `<p class="empty-msg">${escapeHtml(mensaje)}</p>`;
+    }
+
+    async function cargar() {
+      countResumenEl.textContent = "Cargando…";
+      viewMessageEl.textContent = "";
+      groupsEl.innerHTML = "";
+
+      let csv;
+      try {
+        const response = await fetch(CSV_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        csv = await response.text();
+      } catch (err) {
+        // Abierto como file:// el navegador bloquea el fetch (Google no manda CORS al redirect).
+        const local = window.location.protocol === "file:";
+        renderError(local
+          ? "Para ver el programa localmente hay que servirlo por HTTP (por ejemplo: python3 -m http.server en la carpeta del sitio)."
+          : "No pude cargar el programa. Verificá que la planilla siga publicada.");
+        return;
+      }
+
+      const grupos = prepararGrupos(extraerGrupos(parseCsv(csv)), new Date());
+
+      if (!grupos.length) {
+        countResumenEl.textContent = "0 grupos";
+        groupsEl.innerHTML = `<p class="empty-msg">No encontré grupos en el programa.</p>`;
+        return;
+      }
+
+      const actual = grupos.find(g => g.actual);
+
+      countResumenEl.textContent = grupos.length === 1 ? "1 grupo" : `${grupos.length} grupos`;
+      viewMessageEl.innerHTML = actual
+        ? `Esta semana le toca al <span class="badge badge-hoy"><span class="badge-dot"></span><span>Grupo ${escapeHtml(actual.grupo)}</span></span>`
+        : "No hay un turno asignado para hoy.";
+      groupsEl.innerHTML = grupos.map(renderGrupo).join("");
+    }
+
+    cargar();
+  </script>
+</body>
+</html>
