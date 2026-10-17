@@ -476,6 +476,7 @@
         .filter(g => g.grupo || g.semana);
     }
 
+    // "01 NOV" (domingo del agasajo). También acepta los rangos viejos:
     // "12 - 18 OCT", "19 - 25 OCT.", "26 OCT - 01 NOV." -> {start, end, label}
     function parseSemana(label, ref) {
       const raw = cleanText(label);
@@ -484,7 +485,9 @@
       const limpio = raw.toUpperCase().replace(/\./g, " ").replace(/\s+/g, " ").trim();
       let d1, m1, d2, m2, m;
 
-      if ((m = limpio.match(/^(\d{1,2})\s*-\s*(\d{1,2})\s+([A-Z]{3,4})$/))) {
+      if ((m = limpio.match(/^(\d{1,2})\s+([A-Z]{3,4})$/))) {
+        d1 = d2 = +m[1]; m1 = m2 = MES_ABREV[m[2]];
+      } else if ((m = limpio.match(/^(\d{1,2})\s*-\s*(\d{1,2})\s+([A-Z]{3,4})$/))) {
         d1 = +m[1]; d2 = +m[2]; m1 = m2 = MES_ABREV[m[3]];
       } else if ((m = limpio.match(/^(\d{1,2})\s+([A-Z]{3,4})\s*-\s*(\d{1,2})\s+([A-Z]{3,4})$/))) {
         d1 = +m[1]; m1 = MES_ABREV[m[2]]; d2 = +m[3]; m2 = MES_ABREV[m[4]];
@@ -511,9 +514,17 @@
       return { start: mejor.start, end: mejor.end, label: raw.replace(/\.+\s*$/, "") };
     }
 
-    // Ordena por fecha de inicio y marca la semana que contiene la fecha de referencia.
+    // Domingo de este fin de semana: hoy si ya es domingo, si no el próximo.
+    function domingoDeEsteFinDeSemana(ref) {
+      const d = soloFecha(ref);
+      d.setDate(d.getDate() + ((7 - d.getDay()) % 7));
+      return d;
+    }
+
+    // Ordena por fecha de inicio y marca la entrada del domingo de este fin de semana.
     function prepararGrupos(items, hoy) {
       const ref = soloFecha(hoy);
+      const domingo = domingoDeEsteFinDeSemana(ref);
       return items
         .map(g => ({ ...g, rango: parseSemana(g.semana, ref) }))
         .sort((a, b) => {
@@ -524,7 +535,7 @@
         })
         .map(g => ({
           ...g,
-          actual: !!g.rango && ref >= g.rango.start && ref <= g.rango.end
+          actual: !!g.rango && domingo >= g.rango.start && domingo <= g.rango.end
         }));
     }
 
@@ -619,7 +630,7 @@
       countResumenEl.textContent = grupos.length === 1 ? "1 grupo" : `${grupos.length} grupos`;
       viewMessageEl.innerHTML = actual
         ? `Esta semana le toca al <span class="badge badge-hoy"><span class="badge-dot"></span><span>Grupo ${escapeHtml(actual.grupo)}</span></span>`
-        : "No hay un turno asignado para hoy.";
+        : "No hay grupo asignado para este fin de semana.";
       groupsEl.innerHTML = grupos.map(renderGrupo).join("");
     }
 
