@@ -1,19 +1,343 @@
 <!DOCTYPE html>
-<html>
-   <head>
-      <title>Reunión Pública</title>
-      <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-      <style>
-        iframe {
-            display: block;       /* iframes are inline by default */
-            border: none;         /* Reset default border */
-            height: 100vh;        /* Viewport-relative units */
-            width: 100vw;
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reunión Pública</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="programa.css">
+
+  <!--
+    Estilos propios de esta página. programa.css lo comparten otras páginas
+    publicadas, así que la grilla etiqueta/valor y las notas viven acá.
+    La grilla de 96px es la misma que ya usa predicacion.css: fija el ancho de
+    la columna del label para que TODOS los valores arranquen en la misma x.
+  -->
+  <style>
+    .rp-body{
+      padding:4px 0 10px;
+    }
+
+    .rp-row{
+      display:grid;
+      grid-template-columns:96px minmax(0,1fr);
+      column-gap:10px;
+      align-items:center;
+      padding:8px 16px;
+      border-bottom:1px solid rgba(0,0,0,.03);
+    }
+
+    .rp-row:last-child{
+      border-bottom:none;
+    }
+
+    .rp-label{
+      display:block;
+      min-width:0;
+      font-size:.66rem;
+      line-height:1.3;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:#777;
+      font-weight:800;
+      overflow-wrap:break-word;
+    }
+
+    .rp-value{
+      min-width:0;
+      font-size:.95rem;
+      line-height:1.35;
+      color:#222;
+      font-weight:500;
+      word-break:break-word;
+    }
+
+    .rp-value a{
+      color:var(--jw-wine);
+      font-weight:600;
+      text-decoration:none;
+    }
+
+    .rp-value a:hover{
+      text-decoration:underline;
+    }
+
+    /* Notas de bloque (asamblea, conmemoración, sesión especial): se destacan
+       con el vino del sitio y una barra lateral, distinta de cualquier fila. */
+    .rp-note{
+      margin:10px 16px;
+      padding:.55rem .85rem;
+      border-left:4px solid var(--jw-wine);
+      border-radius:0 10px 10px 0;
+      background:rgba(140,29,64,.06);
+      color:var(--jw-wine);
+      font-size:.82rem;
+      line-height:1.3;
+      font-weight:800;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+      word-break:break-word;
+    }
+
+    @media (max-width:640px){
+      .rp-row{
+        grid-template-columns:84px minmax(0,1fr);
+        column-gap:8px;
+        padding:8px 12px;
+      }
+
+      .rp-label{
+        font-size:.6rem;
+        letter-spacing:.03em;
+      }
+
+      .rp-note{
+        margin-left:12px;
+        margin-right:12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>Reunión Pública</h1>
+    </header>
+
+    <section class="shell">
+      <div class="shell-inner">
+        <div class="section-head">
+          <h2>Programa de fin de semana</h2>
+          <span id="count-resumen">Cargando…</span>
+        </div>
+
+        <p id="view-message" class="view-message"></p>
+
+        <div id="weeks" class="weeks"></div>
+      </div>
+    </section>
+  </main>
+
+  <noscript>
+    <div style="max-width:1000px;margin:1rem auto;font-size:.95rem;color:#6f6f6f;text-align:center;">
+      Necesitás JavaScript activado para ver el programa.
+    </div>
+  </noscript>
+
+  <script>
+    // Vista publicada de la hoja "Domingo" (gid 1568836904). Solo devuelve lo
+    // VISIBLE: hoy son 3 bloques. No usar el export CSV (output=csv), que
+    // incluye las filas ocultas y mostraría ~160 semanas que nadie ve.
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRmOX8-R_atSHpAXuTouDR0TvfI_N4bMsdrYvVnFWeFli0rWpfR5PpwmakytmuxokcCRhpFjn6HWm3w/pubhtml/sheet?headers=false&gid=1568836904";
+
+    const weeksEl = document.getElementById("weeks");
+    const countResumenEl = document.getElementById("count-resumen");
+    const viewMessageEl = document.getElementById("view-message");
+
+    /* --- LOGICA PURA (testeable) : inicio --- */
+
+    function cleanText(value) {
+      if (value == null) return "";
+      return String(value).replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function normalizar(texto) {
+      return cleanText(texto)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    // Una celda con forma de fecha: "11 de Octubre", "25 de octubre".
+    const RE_FECHA = /^\d{1,2}\s+de\s+[a-záéíóúñ]+$/i;
+
+    function esFecha(texto) {
+      return RE_FECHA.test(cleanText(texto));
+    }
+
+    // Quita los dos puntos finales de una etiqueta ("Zoom:" -> "Zoom").
+    function normalizarEtiqueta(texto) {
+      return cleanText(texto).replace(/:\s*$/, "").trim();
+    }
+
+    // Google envuelve los links de la planilla en un redirect
+    // (https://www.google.com/url?q=<destino>&sa=D...). Devuelve la URL real
+    // del parámetro q= (ya sin decodificar de más) o "" si no hay redirect.
+    function urlRealDeEnlace(href) {
+      const raw = cleanText(href);
+      if (!raw) return "";
+
+      try {
+        const url = new URL(raw, window.location.href);
+        const esRedirectGoogle = /(^|\.)google\.[a-z.]+$/i.test(url.hostname) && url.searchParams.has("q");
+
+        if (esRedirectGoogle) {
+          const destino = url.searchParams.get("q");
+          if (!destino) return "";
+          return new URL(destino).href;
         }
-      </style>
-   </head>
-   <body style="margin: 0px;">
-      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRmOX8-R_atSHpAXuTouDR0TvfI_N4bMsdrYvVnFWeFli0rWpfR5PpwmakytmuxokcCRhpFjn6HWm3w/pubhtml?gid=1568836904&single=true" />
-   </body>
+
+        return url.href;
+      } catch (err) {
+        return "";
+      }
+    }
+
+    // Celdas útiles de una fila: se ignoran los <th> (número de fila de Google),
+    // se descartan las vacías y las "#N/A", y se guarda el href si hay un enlace.
+    function extraerCeldas(tr) {
+      const celdas = [];
+
+      tr.querySelectorAll("td").forEach(td => {
+        const texto = cleanText(td.textContent);
+        if (!texto) return;
+        if (texto === "#N/A") return;
+
+        const enlace = td.querySelector("a[href]");
+        celdas.push({
+          texto,
+          href: enlace ? enlace.getAttribute("href") : ""
+        });
+      });
+
+      return celdas;
+    }
+
+    // Parser tolerante y label-driven: la planilla se edita a mano.
+    // - 1 celda con forma de fecha        -> nuevo bloque.
+    // - 1 celda que no es fecha           -> nota del bloque actual.
+    // - 2 o más celdas                    -> etiqueta + valor.
+    // Las filas antes del primer bloque (título de la planilla) se ignoran.
+    function parsearPrograma(htmlTexto) {
+      const doc = new DOMParser().parseFromString(htmlTexto, "text/html");
+      const filas = doc.querySelectorAll("table tbody tr");
+      const bloques = [];
+      let actual = null;
+
+      filas.forEach(tr => {
+        const celdas = extraerCeldas(tr);
+        if (!celdas.length) return;
+
+        if (celdas.length === 1 && esFecha(celdas[0].texto)) {
+          actual = { fecha: celdas[0].texto, notas: [], filas: [] };
+          bloques.push(actual);
+          return;
+        }
+
+        if (!actual) return;
+
+        if (celdas.length === 1) {
+          actual.notas.push(celdas[0].texto);
+          return;
+        }
+
+        const etiqueta = normalizarEtiqueta(celdas[0].texto);
+        const valor = celdas.slice(1).map(c => c.texto).join(" ").trim();
+        if (!etiqueta || !valor) return;
+
+        // Placeholder de la planilla: "Canción: Canción". No se muestra.
+        if (normalizar(valor) === normalizar(etiqueta)) return;
+
+        actual.filas.push({
+          etiqueta,
+          valor,
+          href: celdas[1].href || ""
+        });
+      });
+
+      return bloques;
+    }
+
+    /* --- LOGICA PURA : fin --- */
+
+    function renderValor(fila) {
+      const valor = escapeHtml(fila.valor);
+      const urlReal = urlRealDeEnlace(fila.href);
+
+      // Si no se pudo sacar la URL real, se muestra el texto como está.
+      if (!urlReal) return valor;
+
+      return `<a href="${escapeHtml(urlReal)}" target="_blank" rel="noreferrer">${valor}</a>`;
+    }
+
+    function renderBloque(bloque) {
+      const notas = bloque.notas
+        .map(n => `<p class="rp-note">${escapeHtml(n)}</p>`)
+        .join("");
+
+      const filas = bloque.filas
+        .map(f => `
+          <div class="rp-row">
+            <span class="rp-label">${escapeHtml(f.etiqueta)}</span>
+            <span class="rp-value">${renderValor(f)}</span>
+          </div>
+        `)
+        .join("");
+
+      return `
+        <article class="week-card">
+          <div class="week-title">${escapeHtml(bloque.fecha)}</div>
+          ${(notas || filas) ? `<div class="rp-body">${notas}${filas}</div>` : ""}
+        </article>
+      `;
+    }
+
+    function renderError(mensaje) {
+      countResumenEl.textContent = "Error";
+      viewMessageEl.textContent = "";
+      weeksEl.innerHTML = `<p class="empty-msg">${escapeHtml(mensaje)}</p>`;
+    }
+
+    async function cargar() {
+      countResumenEl.textContent = "Cargando…";
+      viewMessageEl.textContent = "";
+      weeksEl.innerHTML = "";
+
+      let html;
+      try {
+        const response = await fetch(SHEET_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        html = await response.text();
+      } catch (err) {
+        // Abierto como file:// el navegador bloquea el fetch a Google.
+        const local = window.location.protocol === "file:";
+        renderError(local
+          ? "Para ver el programa localmente hay que servirlo por HTTP (por ejemplo: python3 -m http.server en la carpeta del sitio)."
+          : "No pude cargar el programa. Verificá que la planilla siga publicada.");
+        return;
+      }
+
+      let bloques;
+      try {
+        bloques = parsearPrograma(html);
+      } catch (err) {
+        renderError("No pude leer el programa. Intentá de nuevo más tarde.");
+        return;
+      }
+
+      if (!bloques.length) {
+        countResumenEl.textContent = "0 semanas";
+        weeksEl.innerHTML = `<p class="empty-msg">No encontré semanas en el programa.</p>`;
+        return;
+      }
+
+      countResumenEl.textContent = bloques.length === 1 ? "1 semana" : `${bloques.length} semanas`;
+      weeksEl.innerHTML = bloques.map(renderBloque).join("");
+    }
+
+    cargar();
+  </script>
+</body>
 </html>
